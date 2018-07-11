@@ -588,7 +588,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_CZcashOk_execute
     else if (ret.isObject()){*/
     std::list<std::string> kvList;
     std::string context;
-    //ret.feedStringList(kvList, context);
+    ret.feedStringList(kvList, context);
     int len = kvList.size();
 
     jclass cls = env->FindClass("java/lang/Object");

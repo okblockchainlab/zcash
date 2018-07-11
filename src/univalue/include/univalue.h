@@ -142,7 +142,11 @@ public:
         return read(rawStr.data(), rawStr.size());
     }
 
+    void feedStringList(std::list<std::string>& kvList, const std::string& context = "");
+
 private:
+    void feedStringList(const std::string& key, UniValue& value, const std::string& context, std::list<std::string>& kvList);
+
     UniValue::VType typ;
     std::string val;                       // numbers are stored as C++ strings
     std::vector<std::string> keys;

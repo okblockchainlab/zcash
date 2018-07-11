@@ -357,3 +357,57 @@ const UniValue& UniValue::get_array() const
     return *this;
 }
 
+void UniValue::feedStringList(const std::string& key, UniValue& value, const std::string& context, std::list<std::string>& kvList)
+{
+    string res = "Unknown type or value.";
+
+    bool recursive = false;
+    switch (value.getType()) {
+        case UniValue::VBOOL:
+            res = value.get_bool() ? "true" : "false";
+            break;
+        case UniValue::VSTR:
+            res = value.get_str();
+            break;
+        case UniValue::VNUM:
+            res = value.getValStr();
+            break;
+
+        case UniValue::VNULL:
+            res = "VNULL type";
+            break;
+        case UniValue::VOBJ:
+            value.feedStringList(kvList, context + key + "|");
+            recursive = true;
+            break;
+        case UniValue::VARR: {
+            std::vector<UniValue> vList = value.getValues();
+            for (size_t i = 0; i < vList.size(); ++i) {
+                vList[i].feedStringList(kvList, context + key + "|");
+            }
+            recursive = true;
+        }
+            break;
+        default:
+            res = "Unknown type or value.";
+    }
+
+    if (!recursive) {
+        kvList.push_back(context + key);
+        kvList.push_back(res);
+    }
+}
+
+
+void UniValue::feedStringList(std::list<std::string>& kvList, const std::string& context)
+{
+    if (keys.size() == 0) {
+        kvList.push_back(context + "result");
+        kvList.push_back(get_str());
+    } else {
+
+        for (size_t i = 0; i < keys.size(); ++i) {
+            feedStringList(keys[i], values[i], context, kvList);
+        }
+    }
+}
