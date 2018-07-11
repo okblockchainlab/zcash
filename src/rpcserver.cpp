@@ -318,6 +318,10 @@ static const CRPCCommand vRPCCommands[] =
     { "rawtransactions",    "getrawtransaction",      &getrawtransaction,      true  },
     { "rawtransactions",    "sendrawtransaction",     &sendrawtransaction,     false },
     { "rawtransactions",    "signrawtransaction",     &signrawtransaction,     false }, /* uses wallet if enabled */
+
+    { "rawtransactions",    "z_createrawtransaction_ok",   &z_createrawtransaction_ok,   true  },
+    { "rawtransactions",    "z_signrawtransaction_ok",     &z_signrawtransaction_ok,     false },
+
 #ifdef ENABLE_WALLET
     { "rawtransactions",    "fundrawtransaction",     &fundrawtransaction,     false },
 #endif
@@ -402,10 +406,12 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "z_importviewingkey",     &z_importviewingkey,     true  },
     { "wallet",             "z_exportwallet",         &z_exportwallet,         true  },
     { "wallet",             "z_importwallet",         &z_importwallet,         true  },
+    { "wallet",             "ok_wwftest",             &ok_wwftest,             true  },
+    { "wallet",             "getaddressbyprivatekey", &getaddressbyprivatekey,          true  },
 
     // TODO: rearrange into another category
     { "disclosure",         "z_getpaymentdisclosure", &z_getpaymentdisclosure, true  },
-    { "disclosure",         "z_validatepaymentdisclosure", &z_validatepaymentdisclosure, true }
+    { "disclosure",         "z_validatepaymentdisclosure", &z_validatepaymentdisclosure, true },
 #endif // ENABLE_WALLET
 };
 

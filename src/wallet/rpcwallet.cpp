@@ -42,6 +42,10 @@ using namespace std;
 
 using namespace libzcash;
 
+#define LOG(format, ...) printf(format, ##__VA_ARGS__)
+
+#define LOG_DEBUG(format, ...) printf(format, ##__VA_ARGS__)
+
 extern UniValue TxJoinSplitToJSON(const CTransaction& tx);
 
 int64_t nWalletUnlockTime;
@@ -4329,3 +4333,65 @@ UniValue z_listoperationids(const UniValue& params, bool fHelp)
 
     return ret;
 }
+
+
+UniValue ok_wwftest(const UniValue& params, bool fHelp)
+{
+
+    if (!EnsureWalletIsAvailable(fHelp))
+        return NullUniValue;
+
+    std::string param1 = params[0].get_str();
+    std::string param3 = params[2].get_str();
+    printf("param1:%s\n", param1.c_str());
+    printf("param3:%s\n",param3.c_str());
+
+    UniValue stRet("hello world!");
+
+    return stRet;
+}
+
+/*
+ * params:
+ * 0: private key
+ *
+ * return :
+ *  addres string
+ */
+UniValue getaddressbyprivatekey(const UniValue &params, bool fHelp){
+
+    if (!EnsureWalletIsAvailable(fHelp))
+        return NullUniValue;
+
+    if (params.size() != 1)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "ok_getAddress Invalid parameter, params.size() != 1.");
+
+    std::string strSecret = params[0].get_str();
+    std::string addrRet;
+
+    printf("privkey :%s, ", strSecret.c_str());
+    CKey key = DecodeSecret(strSecret);
+    if (key.IsValid())
+    {
+        CPubKey pubkey = key.GetPubKey();
+        assert(key.VerifyPubKey(pubkey));
+        CKeyID vchAddress = pubkey.GetID();
+        addrRet = EncodeDestination(vchAddress);
+    }
+    else {
+        auto spendingkey = DecodeSpendingKey(strSecret);
+        if (!IsValidSpendingKey(spendingkey)) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid private key");
+        }
+        // TODO: Add Sapling support. For now, ensure we can freely convert.
+        assert(boost::get<libzcash::SproutSpendingKey>(&spendingkey) != nullptr);
+        auto key = boost::get<libzcash::SproutSpendingKey>(spendingkey);
+        auto addr = key.address();
+        addrRet = EncodePaymentAddress(addr);
+    }
+
+    //printf("address:%s \n", addrRet.c_str());
+    UniValue ret(addrRet);
+    return ret;
+}
+

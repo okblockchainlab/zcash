@@ -1145,6 +1145,14 @@ public:
                           bool ignoreSpent=true,
                           bool ignoreUnspendable=true);
 
+    /* Find notes filtered by payment address, min depth, ability to spend */
+    void GetFilteredNotes_ok(std::vector<CSproutNotePlaintextEntry> & outEntries,
+                         uint256 utxo,
+                         int  jsindex,
+                          int minDepth=1,
+                          bool ignoreSpent=true,
+                          bool ignoreUnspendable=true);
+
     /* Find notes filtered by payment addresses, min depth, ability to spend */
     void GetFilteredNotes(std::vector<CSproutNotePlaintextEntry>& outEntries,
                           std::set<libzcash::PaymentAddress>& filterAddresses,

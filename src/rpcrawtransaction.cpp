@@ -21,6 +21,10 @@
 #include "uint256.h"
 #ifdef ENABLE_WALLET
 #include "wallet/wallet.h"
+
+//add by okcoin
+#include "wallet/asyncrpcoperation_sendmany.h"
+
 #endif
 
 #include <stdint.h>
@@ -975,4 +979,1063 @@ UniValue sendrawtransaction(const UniValue& params, bool fHelp)
     RelayTransaction(tx);
 
     return hashTx.GetHex();
+}
+
+
+bool find_unspent_notes(std::vector<SendManyInputJSOP> &z_inputs_, uint256 utxo, int jsindex) {
+
+    int mindepth_ = 1;
+    std::vector<CSproutNotePlaintextEntry> entries;
+    {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
+        pwalletMain->GetFilteredNotes_ok(entries, utxo, jsindex, mindepth_);
+    }
+
+    for (CSproutNotePlaintextEntry & entry : entries) {
+        z_inputs_.push_back(SendManyInputJSOP(entry.jsop, entry.plaintext.note(entry.address), CAmount(entry.plaintext.value())));
+    }
+
+    if (z_inputs_.size() == 0) {
+        return false;
+    }
+
+    // sort in descending order, so big notes appear first
+    std::sort(z_inputs_.begin(), z_inputs_.end(), [](SendManyInputJSOP i, SendManyInputJSOP j) -> bool {
+        return ( std::get<2>(i) > std::get<2>(j));
+    });
+
+    return true;
+}
+
+
+
+class SproutNote_wrapper{
+public:
+    SproutNote_wrapper(libzcash::SproutNote note_v):
+            a_pk(note_v.a_pk),rho(note_v.rho),r(note_v.r),value_(note_v.value()){}
+    SproutNote_wrapper(){}
+    uint256 a_pk;
+    uint256 rho;
+    uint256 r;
+    uint64_t value_;
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(a_pk);
+        READWRITE(rho);
+        READWRITE(r);
+        READWRITE(value_);
+    }
+
+};
+
+class CTxIn_z{
+public:
+    CTxIn_z(JSOutPoint jso_v, SproutNote_wrapper note_v, ZCIncrementalWitness vInputWitness_v, uint256 inputAuchor_v):
+            jso(jso_v), note(note_v), vInputWitness(vInputWitness_v), inputAuchor(inputAuchor_v){}
+
+    CTxIn_z(){}
+    JSOutPoint jso;
+    SproutNote_wrapper note;
+    ZCIncrementalWitness vInputWitness;
+    uint256 inputAuchor;
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*const_cast<JSOutPoint*>(&jso));
+        READWRITE(*const_cast<SproutNote_wrapper*>(&note));
+        READWRITE(*const_cast<ZCIncrementalWitness*>(&vInputWitness));
+        READWRITE(inputAuchor);
+
+    }
+};
+
+typedef  std::array<unsigned char, ZC_MEMO_SIZE> memoArray;
+class JSOutput_wrapper{
+public:
+
+    JSOutput_wrapper( std::string address_, CAmount value_, std::string memo_):
+            address(address_), value(value_), memo(memo_){}
+
+    JSOutput_wrapper(){}
+
+    std::string address;
+    CAmount value;
+    std::string memo;  // 0xF6 is invalid UTF8 as per spec, rest of array is 0x00
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*const_cast<std::string*>(&address));
+        READWRITE(*const_cast<CAmount*>(&value));
+        READWRITE(*const_cast<std::string*>(&memo));
+    }
+};
+
+class CTxOut_z{
+public:
+    CTxOut_z(JSOutput_wrapper jso_v):jso(jso_v){}
+    CTxOut_z(){}
+
+    JSOutput_wrapper  jso;
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*const_cast<JSOutput_wrapper*>(&jso));
+    }
+};
+
+class CTransaction_z{
+public:
+    CTransaction  tx;
+
+    std::vector<CTxIn_z> vinz;
+    std::vector<CTxOut_z> voutz;
+
+    uint32_t consensusBranchId_;
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*const_cast<CTransaction *>(&tx));
+        READWRITE(*const_cast<std::vector <CTxIn_z> *>(&vinz));
+        READWRITE(*const_cast<std::vector <CTxOut_z> *>(&voutz));
+        READWRITE(consensusBranchId_);
+    }
+};
+
+std::string EncodeHexTx_z(const CTransaction_z &rawTx ){
+    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+    ssTx << rawTx;
+    return HexStr(ssTx.begin(), ssTx.end());
+}
+
+bool DecodeHexTx_z (CTransaction_z& tx, const std::string& strHexTx){
+    if (!IsHex(strHexTx))
+        return false;
+
+    std::vector<unsigned char> txData(ParseHex(strHexTx));
+    CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
+    try {
+        ssData >> tx;
+    }
+    catch (const std::exception& e) {
+        printf("DecodeHexTx_z exception:%s \n", e.what());
+        return false;
+    }
+
+    return true;
+}
+
+
+int find_output_ok(UniValue obj, int n) {
+    UniValue outputMapValue = find_value(obj, "outputmap");
+    if (!outputMapValue.isArray()) {
+        throw JSONRPCError(RPC_WALLET_ERROR, "Missing outputmap for JoinSplit operation");
+    }
+
+    UniValue outputMap = outputMapValue.get_array();
+    assert(outputMap.size() == ZC_NUM_JS_OUTPUTS);
+    for (size_t i = 0; i < outputMap.size(); i++) {
+        if (outputMap[i].get_int() == n) {
+            return i;
+        }
+    }
+
+    throw std::logic_error("n is not present in outputmap");
+}
+
+
+bool Find_Spendingkey_PaymentAddr(const std::vector<SpendingKey> &vecKeys, const uint256 a_pk,
+                                  PaymentAddress &paymentaddress, SpendingKey &spendingkey)
+{
+    for(int i=0; i<vecKeys.size(); i++)
+    {
+        SpendingKey spendingkeyOne = vecKeys[i];
+        assert(boost::get<libzcash::SproutSpendingKey>(&spendingkeyOne) != nullptr);
+        auto key = boost::get<libzcash::SproutSpendingKey>(spendingkeyOne);
+        auto addr = key.address();
+
+        if(addr.a_pk == a_pk){
+            spendingkey = spendingkeyOne;
+            paymentaddress = addr;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+std::array<unsigned char, ZC_MEMO_SIZE> get_memo_from_hex_string(std::string s)
+{
+    std::array<unsigned char, ZC_MEMO_SIZE> memo = {{0x00}};
+
+    std::vector<unsigned char> rawMemo = ParseHex(s.c_str());
+
+    // If ParseHex comes across a non-hex char, it will stop but still return results so far.
+    size_t slen = s.length();
+    if (slen % 2 != 0 || (slen > 0 && rawMemo.size() != slen / 2)) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Memo must be in hexadecimal format");
+    }
+
+    if (rawMemo.size() > ZC_MEMO_SIZE) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Memo size of %d is too big, maximum allowed is %d", rawMemo.size(), ZC_MEMO_SIZE));
+    }
+
+    // copy vector into boost array
+    int lenMemo = rawMemo.size();
+    for (int i = 0; i < ZC_MEMO_SIZE && i < lenMemo; i++) {
+        memo[i] = rawMemo[i];
+    }
+    return memo;
+}
+UniValue perform_joinsplit(
+        AsyncJoinSplitInfo & info,
+        std::vector<boost::optional < ZCIncrementalWitness>> witnesses,
+        uint256 anchor,
+        const SpendingKey &spendingkey_,
+        CTransaction_z &tx_z,
+        const unsigned char *pjoinSplitPrivKey_)
+{
+
+    if (anchor.IsNull()) {
+        throw std::runtime_error("anchor is null");
+    }
+
+    if (!(witnesses.size() == info.notes.size())) {
+        throw runtime_error("number of notes and witnesses do not match");
+    }
+
+    for (size_t i = 0; i < witnesses.size(); i++) {
+        if (!witnesses[i]) {
+            throw runtime_error("joinsplit input could not be found in tree");
+        }
+        info.vjsin.push_back(JSInput(*witnesses[i], info.notes[i], boost::get<libzcash::SproutSpendingKey>(spendingkey_)));
+    }
+
+    // Make sure there are two inputs and two outputs
+    while (info.vjsin.size() < ZC_NUM_JS_INPUTS) {
+        info.vjsin.push_back(JSInput());
+    }
+
+    while (info.vjsout.size() < ZC_NUM_JS_OUTPUTS) {
+        info.vjsout.push_back(JSOutput());
+    }
+
+    if (info.vjsout.size() != ZC_NUM_JS_INPUTS || info.vjsin.size() != ZC_NUM_JS_OUTPUTS) {
+        throw runtime_error("unsupported joinsplit input/output counts");
+    }
+
+    CMutableTransaction mtx(tx_z.tx);
+
+    // Generate the proof, this can take over a minute.
+    std::array<libzcash::JSInput, ZC_NUM_JS_INPUTS> inputs
+            {info.vjsin[0], info.vjsin[1]};
+    std::array<libzcash::JSOutput, ZC_NUM_JS_OUTPUTS> outputs
+            {info.vjsout[0], info.vjsout[1]};
+    std::array<size_t, ZC_NUM_JS_INPUTS> inputMap;
+    std::array<size_t, ZC_NUM_JS_OUTPUTS> outputMap;
+
+    uint256 esk; // payment disclosure - secret
+
+    JSDescription jsdesc = JSDescription::Randomized(
+            mtx.fOverwintered && (mtx.nVersion >= SAPLING_TX_VERSION),
+            *pzcashParams,
+            tx_z.tx.joinSplitPubKey,
+            anchor,
+            inputs,
+            outputs,
+            inputMap,
+            outputMap,
+            info.vpub_old,
+            info.vpub_new,
+            true,
+            &esk); // parameter expects pointer to esk, so pass in address
+    {
+        auto verifier = libzcash::ProofVerifier::Strict();
+        if (!(jsdesc.Verify(*pzcashParams, verifier, tx_z.tx.joinSplitPubKey))) {
+            throw std::runtime_error("error verifying joinsplit");
+        }
+    }
+
+    mtx.vjoinsplit.push_back(jsdesc);
+
+    // Empty output script.
+    CScript scriptCode;
+    CTransaction signTx(mtx);
+    uint256 dataToBeSigned = SignatureHash(scriptCode, signTx, NOT_AN_INPUT, SIGHASH_ALL, 0, tx_z.consensusBranchId_);
+
+    // Add the signature
+    if (!(crypto_sign_detached(&mtx.joinSplitSig[0], NULL,
+                               dataToBeSigned.begin(), 32,
+                               pjoinSplitPrivKey_
+    ) == 0))
+    {
+        throw std::runtime_error("crypto_sign_detached failed");
+    }
+
+    // Sanity check
+    if (!(crypto_sign_verify_detached(&mtx.joinSplitSig[0],
+                                      dataToBeSigned.begin(), 32,
+                                      mtx.joinSplitPubKey.begin()
+    ) == 0))
+    {
+        throw std::runtime_error("crypto_sign_verify_detached failed");
+    }
+
+    CTransaction rawTx(mtx);
+    tx_z.tx = rawTx;
+
+    CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+    ss << rawTx;
+
+    std::string encryptedNote1;
+    std::string encryptedNote2;
+    {
+        CDataStream ss2(SER_NETWORK, PROTOCOL_VERSION);
+        ss2 << ((unsigned char) 0x00);
+        ss2 << jsdesc.ephemeralKey;
+        ss2 << jsdesc.ciphertexts[0];
+        ss2 << jsdesc.h_sig(*pzcashParams, tx_z.tx.joinSplitPubKey);
+
+        encryptedNote1 = HexStr(ss2.begin(), ss2.end());
+    }
+    {
+        CDataStream ss2(SER_NETWORK, PROTOCOL_VERSION);
+        ss2 << ((unsigned char) 0x01);
+        ss2 << jsdesc.ephemeralKey;
+        ss2 << jsdesc.ciphertexts[1];
+        ss2 << jsdesc.h_sig(*pzcashParams, tx_z.tx.joinSplitPubKey);
+
+        encryptedNote2 = HexStr(ss2.begin(), ss2.end());
+    }
+
+    UniValue arrInputMap(UniValue::VARR);
+    UniValue arrOutputMap(UniValue::VARR);
+    for (size_t i = 0; i < ZC_NUM_JS_INPUTS; i++) {
+        arrInputMap.push_back(static_cast<uint64_t>(inputMap[i]));
+    }
+    for (size_t i = 0; i < ZC_NUM_JS_OUTPUTS; i++) {
+        arrOutputMap.push_back(static_cast<uint64_t>(outputMap[i]));
+    }
+
+    UniValue obj(UniValue::VOBJ);
+    obj.push_back(Pair("encryptednote1", encryptedNote1));
+    obj.push_back(Pair("encryptednote2", encryptedNote2));
+    obj.push_back(Pair("rawtxn", HexStr(ss.begin(), ss.end())));
+    obj.push_back(Pair("inputmap", arrInputMap));
+    obj.push_back(Pair("outputmap", arrOutputMap));
+    return obj;
+}
+
+UniValue perform_joinsplit(AsyncJoinSplitInfo & info, std::vector<JSOutPoint> & outPoints,
+                           const SpendingKey  &spendingKey_,
+                           CTransaction_z &tx_,
+                           const unsigned char *pjoinSplitPrivKey_)
+{
+    std::vector<boost::optional < ZCIncrementalWitness>> witnesses;
+    uint256 anchor;
+    {
+        pwalletMain->GetNoteWitnesses(outPoints, witnesses, anchor);
+    }
+    return perform_joinsplit(info, witnesses, anchor, spendingKey_, tx_, pjoinSplitPrivKey_);
+}
+
+UniValue perform_joinsplit(AsyncJoinSplitInfo & info,  const SpendingKey &spendingKey_,
+                           CTransaction_z &tx_, const unsigned char *pjoinSplitPrivKey_)
+{
+    std::vector<boost::optional < ZCIncrementalWitness>> witnesses;
+    uint256 anchor;
+    {
+        anchor = pcoinsTip->GetBestAnchor(SPROUT);    // As there are no inputs, ask the wallet for the best anchor
+    }
+    return perform_joinsplit(info, witnesses, anchor, spendingKey_, tx_, pjoinSplitPrivKey_);
+}
+
+//add by okcoin
+UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
+    if (fHelp || params.size() < 2 || params.size() > 3)
+        throw runtime_error(
+
+                "z_createrawtransaction_ok [{\"txid\":\"id\",\"z_addr\":},...] {\"address\":amount,...} ( locktime )\n"
+                "\nCreate a transaction spending the given inputs and sending to the given addresses.\n"
+                "Returns hex-encoded raw transaction.\n"
+                "Note that the transaction's inputs are not signed, and\n"
+                "it is not stored in the wallet or transmitted to the network.\n"
+
+                "\nArguments:\n"
+                "1. \"transactions\"        (string, required) A json array of json objects\n"
+                "     [\n"
+                "       {\n"
+                "         \"txid\":\"id\",  (string, required) The transaction id\n"
+                "         \"vout\":n        (numeric, required) The output number\n"
+                "         \"sequence\":n    (numeric, optional) The sequence number\n"
+                "       }\n"
+                "       ,...\n"
+                "     ]\n"
+                "2. \"transactions\"        (string, required) A json array of json objects\n"
+                "     [\n"
+                "       {\n"
+                "         \"txid\":\"id\",  (string, required) The transaction id\n"
+                "         \"jsindex\":n        \n"
+                "       }\n"
+                "       ,...\n"
+                "     ]\n"
+                "3. \"amounts\"             (array, required) An array of json objects representing the amounts to send.\n"
+                "    [{\n"
+                "      \"address\":\"address\"  (string, required) The address is a taddr or zaddr\n"
+                "      \"amount\":amount    (numeric, required) The numeric amount in  is the value\n"
+                "      \"memo\":\"memo\"        (string, optional) If the address is a zaddr, raw data represented in hexadecimal string format\n"
+                "    }, ... ]\n"
+
+                "\nResult:\n"
+                "\"transaction\"            (string) hex string of the transaction\n"
+
+                "\nExamples\n"
+        );
+
+
+    RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
+    if (params[0].isNull() || params[1].isNull() || params[2].isNull())
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 and  3 must be non-null");
+
+    UniValue inputs_t = params[0].get_array();
+    UniValue inputs_z = params[1].get_array();
+    UniValue outputs = params[2].get_array();
+
+
+    if (outputs.size()==0)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, amounts array is empty.");
+
+
+    if( inputs_t.size()>0 && inputs_z.size()>0)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, only one input  is allowed");
+
+
+    int nextBlockHeight = chainActive.Height() + 1;
+    CMutableTransaction rawTx = CreateNewContextualCMutableTransaction(
+            Params().GetConsensus(), nextBlockHeight);
+
+    CTransaction_z  rawTx_z;
+
+    // Grab the current consensus branch ID
+    {
+        LOCK(cs_main);
+        rawTx_z.consensusBranchId_ = CurrentEpochBranchId(chainActive.Height() + 1, Params().GetConsensus());
+    }
+
+    if (NetworkUpgradeActive(nextBlockHeight, Params().GetConsensus(), Consensus::UPGRADE_OVERWINTER)) {
+        if (rawTx.nExpiryHeight >= TX_EXPIRY_HEIGHT_THRESHOLD){
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "nExpiryHeight must be less than TX_EXPIRY_HEIGHT_THRESHOLD.");
+        }
+    }
+
+    if (params.size() > 3 && !params[3].isNull()) {
+        int64_t nLockTime = params[2].get_int64();
+        if (nLockTime < 0 || nLockTime > std::numeric_limits<uint32_t>::max())
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, locktime out of range");
+        rawTx.nLockTime = nLockTime;
+    }
+
+    for (size_t idx = 0; idx < inputs_t.size(); idx++) {
+        const UniValue& input = inputs_t[idx];
+        const UniValue& o = input.get_obj();
+
+        uint256 txid = ParseHashO(o, "txid");
+
+        const UniValue& vout_v = find_value(o, "vout");
+        if (!vout_v.isNum())
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, missing vout key");
+        int nOutput = vout_v.get_int();
+        if (nOutput < 0)
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, vout must be positive");
+
+        uint32_t nSequence = (rawTx.nLockTime ? std::numeric_limits<uint32_t>::max() - 1 : std::numeric_limits<uint32_t>::max());
+
+        // set the sequence number if passed in the parameters object
+        const UniValue& sequenceObj = find_value(o, "sequence");
+        if (sequenceObj.isNum())
+            nSequence = sequenceObj.get_int();
+
+        CTxIn in(COutPoint(txid, nOutput), CScript(), nSequence);
+        rawTx.vin.push_back(in);
+    }
+
+    for (size_t idx = 0; idx < inputs_z.size(); idx++) {
+        const UniValue& input = inputs_z[idx];
+        const UniValue& o = input.get_obj();
+
+        uint256 txid = ParseHashO(o, "txid");
+        const UniValue& vout_v = find_value(o, "jsindex");
+        int jsindex = vout_v.get_int();
+
+        std::vector<SendManyInputJSOP> z_inputs;
+        std::deque<SendManyInputJSOP> zInputsDeque;
+        if( find_unspent_notes(z_inputs, txid, jsindex))
+        {
+            // Copy zinputs and zoutputs to more flexible containers
+           for (auto o : z_inputs) {
+                zInputsDeque.push_back(o);
+            }
+        }
+        //
+        // consume input source
+        //
+        while (zInputsDeque.size() > 0) {
+            LOCK2(cs_main, pwalletMain->cs_wallet);
+            SendManyInputJSOP t = zInputsDeque.front();
+            JSOutPoint jso = std::get<0>(t);
+            SproutNote note = std::get<1>(t);
+            CAmount noteFunds = std::get<2>(t);
+            zInputsDeque.pop_front();
+
+            std::vector<JSOutPoint> vOutPoints = { jso };
+            uint256 inputAuchor;
+
+            std::vector<boost::optional<ZCIncrementalWitness>> vInputWitnesses;
+            pwalletMain->GetNoteWitnesses(vOutPoints, vInputWitnesses, inputAuchor);
+
+            ZCIncrementalWitness ss;
+            rawTx_z.vinz.push_back(CTxIn_z(jso, SproutNote_wrapper(note), vInputWitnesses[0].get(), inputAuchor));
+        }
+    }
+
+
+    // Keep track of addresses to spot duplicates
+    set<std::string> setAddress;
+    for (const UniValue& o : outputs.getValues()) {
+        if (!o.isObject())
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected object");
+
+        // sanity check, report error if unknown key-value pairs
+        for (const string& name_ : o.getKeys()) {
+            std::string s = name_;
+            if (s != "address" && s != "amount" && s!="memo")
+                throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, unknown key: ")+s);
+        }
+
+        string address = find_value(o, "address").get_str();
+        bool isZaddr = false;
+        CTxDestination taddr = DecodeDestination(address);
+        if (!IsValidDestination(taddr)) {
+            if (IsValidPaymentAddressString(address)) {
+                isZaddr = true;
+            } else {
+                throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, unknown address format: ")+address );
+            }
+        }
+
+        if (setAddress.count(address))
+            throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+address);
+        setAddress.insert(address);
+
+        UniValue memoValue = find_value(o, "memo");
+        string memo;
+        if (!memoValue.isNull()) {
+            memo = memoValue.get_str();
+            if (!isZaddr) {
+                throw JSONRPCError(RPC_INVALID_PARAMETER, "Memo cannot be used with a taddr.  It can only be used with a zaddr.");
+            } else if (!IsHex(memo)) {
+                throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected memo data in hexadecimal format.");
+            }
+            if (memo.length() > ZC_MEMO_SIZE*2) {
+                throw JSONRPCError(RPC_INVALID_PARAMETER,  strprintf("Invalid parameter, size of memo is larger than maximum allowed %d", ZC_MEMO_SIZE ));
+            }
+        }
+
+        UniValue av = find_value(o, "amount");
+        CAmount nAmount = AmountFromValue( av );
+        if (nAmount < 0)
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, amount must be positive");
+
+        if (isZaddr) {
+            rawTx_z.voutz.push_back(CTxOut_z(JSOutput_wrapper(address, nAmount, memo)));
+        } else {
+            CScript scriptPubKey = GetScriptForDestination(taddr);
+            CTxOut out(nAmount, scriptPubKey);
+            rawTx.vout.push_back(out);
+        }
+    }
+
+    rawTx_z.tx = CTransaction(rawTx);
+
+    return EncodeHexTx_z(rawTx_z);
+}
+
+UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
+
+    if (fHelp || params.size() < 1 || params.size() > 4)
+        throw runtime_error(
+                "z_signrawtransaction_ok hexstring: z_createrawtransaction_ok\n"
+                "Sign inputs for raw transaction_z (serialized, hex-encoded).\n"
+                "The second optional argument (may be null) is an array of previous transaction outputs that\n"
+                "this transaction depends on but may not yet be in the block chain.\n"
+                "The third optional argument (may be null) is an array of base58-encoded private\n"
+                "keys that, if given, will be the only keys used to sign the transaction.\n"
+                #ifdef ENABLE_WALLET
+                + HelpRequiringPassphrase() + "\n"
+                #endif
+
+                "\nArguments:\n"
+                "1. \"hexstring\"     (string, required) The transaction hex string\n"
+                "2. \"prevtxs\"       (string, optional) An json array of previous dependent transaction outputs\n"
+                "     [               (json array of json objects, or 'null' if none provided)\n"
+                "       {\n"
+                "         \"txid\":\"id\",             (string, required) The transaction id\n"
+                "         \"vout\":n,                  (numeric, required) The output number\n"
+                "         \"scriptPubKey\": \"hex\",   (string, required) script key\n"
+                "         \"redeemScript\": \"hex\",   (string, required for P2SH) redeem script\n"
+                "         \"amount\": value            (numeric, required) The amount spent\n"
+                "       }\n"
+                "       ,...\n"
+                "    ]\n"
+                "3. \"privatekeys\"     (string, optional) A json array of base58-encoded private keys for signing\n"
+                "    [                  (json array of strings, or 'null' if none provided)\n"
+                "      \"privatekey\"   (string) private key in base58-encoding\n"
+                "      ,...\n"
+                "    ]\n"
+                "4. \"sighashtype\"     (string, optional, default=ALL) The signature hash type. Must be one of\n"
+                "       \"ALL\"\n"
+                "       \"NONE\"\n"
+                "       \"SINGLE\"\n"
+                "       \"ALL|ANYONECANPAY\"\n"
+                "       \"NONE|ANYONECANPAY\"\n"
+                "       \"SINGLE|ANYONECANPAY\"\n"
+
+                "\nResult:\n"
+                "{\n"
+                "  \"hex\" : \"value\",           (string) The hex-encoded raw transaction with signature(s)\n"
+                "  \"complete\" : true|false,   (boolean) If the transaction has a complete set of signatures\n"
+                "  \"errors\" : [                 (json array of objects) Script verification errors (if there are any)\n"
+                "    {\n"
+                "      \"txid\" : \"hash\",           (string) The hash of the referenced, previous transaction\n"
+                "      \"vout\" : n,                (numeric) The index of the output to spent and used as input\n"
+                "      \"scriptSig\" : \"hex\",       (string) The hex-encoded signature script\n"
+                "      \"sequence\" : n,            (numeric) Script sequence number\n"
+                "      \"error\" : \"text\"           (string) Verification or signing error related to the input\n"
+                "    }\n"
+                "    ,...\n"
+                "  ]\n"
+                "}\n"
+
+                "\nExamples:\n"
+                + HelpExampleCli("signrawtransaction", "\"myhex\"")
+                + HelpExampleRpc("signrawtransaction", "\"myhex\"")
+        );
+
+    RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR)(UniValue::VARR)(UniValue::VARR)(UniValue::VSTR), true);
+
+#ifdef ENABLE_WALLET
+        LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
+
+
+
+
+    CTransaction_z tx_z;
+    std::string strHex = params[0].get_str();
+    if (!DecodeHexTx_z(tx_z, strHex))
+        throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX_z decode failed");
+
+
+    CTransaction tx_ = tx_z.tx;
+
+    CAmount t_outputs_total = 0;
+    for (int i=0; i<tx_z.tx.vout.size(); i++) {
+        t_outputs_total += tx_z.tx.vout[i].nValue;
+    }
+
+    /**
+    * SCENARIO #1
+    *
+    * taddr -> taddrs
+    *
+    * There are no zaddrs or joinsplits involved.
+    */
+
+    if (tx_z.vinz.size() == 0 && tx_z.voutz.size() == 0){
+        UniValue rawtxnValue = EncodeHexTx(tx_z.tx);
+        if (rawtxnValue.isNull()) {
+            throw JSONRPCError(RPC_WALLET_ERROR, "Missing hex data for raw transaction");
+        }
+        UniValue paramTx(UniValue::VARR);
+        paramTx.push_back(rawtxnValue.get_str());
+        if(params.size() == 3){
+            paramTx.push_back(params[1].get_array());
+            paramTx.push_back(params[2].get_array());
+        }
+
+        if(params.size() == 4){
+            paramTx.push_back(params[3].get_str());
+        }
+        return signrawtransaction(paramTx, false);
+    }
+    /**
+     * SCENARIO #1 end
+     */
+
+
+    uint256 joinSplitPubKey_;
+    unsigned char joinSplitPrivKey_[crypto_sign_SECRETKEYBYTES];
+
+    CMutableTransaction mtx(tx_);
+    crypto_sign_keypair(joinSplitPubKey_.begin(), joinSplitPrivKey_);
+    mtx.joinSplitPubKey = joinSplitPubKey_;
+    tx_z.tx = CTransaction(mtx);
+
+    // The key is the result string from calling JSOutPoint::ToString()
+    std::unordered_map<std::string, WitnessAnchorData> jsopWitnessAnchorMap;
+    std::deque<SendManyInputJSOP> zInputsDeque;
+
+    for (int i=0; i<tx_z.vinz.size(); i++) {
+        JSOutPoint jso = tx_z.vinz[i].jso;
+        SproutNote_wrapper noteWrapper = tx_z.vinz[i].note;
+        ZCIncrementalWitness wit = tx_z.vinz[i].vInputWitness;
+        uint256 inputAnchor = tx_z.vinz[i].inputAuchor;
+
+        SproutNote note(noteWrapper.a_pk, noteWrapper.value_, noteWrapper.rho, noteWrapper.r);
+        zInputsDeque.push_back(SendManyInputJSOP(tx_z.vinz[i].jso, note, note.value()));
+
+        jsopWitnessAnchorMap[ jso.ToString() ] = WitnessAnchorData{ wit, inputAnchor };
+    }
+
+    std::deque<SendManyRecipient> zOutputsDeque;
+    for (int i=0; i<tx_z.voutz.size(); i++) {
+        zOutputsDeque.push_back(SendManyRecipient(tx_z.voutz[i].jso.address, tx_z.voutz[i].jso.value, tx_z.voutz[i].jso.memo));
+    }
+
+
+    /**
+    * SCENARIO #2
+    *
+    * taddr -> taddrs
+     *      -> zaddrs
+    *
+    */
+
+    if (tx_z.vinz.size() == 0 && tx_z.voutz.size() > 0){
+
+        // Create joinsplits, where each output represents a zaddr recipient.
+        UniValue obj(UniValue::VOBJ);
+        while (zOutputsDeque.size() > 0) {
+            AsyncJoinSplitInfo info;
+            info.vpub_old = 0;
+            info.vpub_new = 0;
+            int n = 0;
+            while (n++<ZC_NUM_JS_OUTPUTS && zOutputsDeque.size() > 0) {
+                SendManyRecipient smr = zOutputsDeque.front();
+                std::string address = std::get<0>(smr);
+                CAmount value = std::get<1>(smr);
+                std::string hexMemo = std::get<2>(smr);
+                zOutputsDeque.pop_front();
+
+                PaymentAddress pa = DecodePaymentAddress(address);
+                JSOutput jso = JSOutput(boost::get<libzcash::SproutPaymentAddress>(pa), value);
+                if (hexMemo.size() > 0) {
+                    jso.memo = get_memo_from_hex_string(hexMemo);
+                }
+                info.vjsout.push_back(jso);
+
+                // Funds are removed from the value pool and enter the private pool
+                info.vpub_old += value;
+            }
+
+            SpendingKey spendingk;
+            obj = perform_joinsplit(info, spendingk, tx_z, joinSplitPrivKey_);
+        }
+
+        UniValue rawtxnValue = find_value(obj, "rawtxn");
+        if (rawtxnValue.isNull()) {
+            throw JSONRPCError(RPC_WALLET_ERROR, "Missing hex data for raw transaction");
+        }
+        UniValue paramTx(UniValue::VARR);
+        paramTx.push_back(rawtxnValue.get_str());
+        if(params.size() == 3){
+            paramTx.push_back(params[1].get_array());
+            paramTx.push_back(params[2].get_array());
+        }
+
+        if(params.size() == 4){
+            paramTx.push_back(params[3].get_str());
+        }
+        return signrawtransaction(paramTx, false);
+    }
+    /**
+     * SCENARIO #2 end
+     */
+
+
+    //zaddr: spendingkey
+    std::vector<SpendingKey> vecSecret;
+    if (params.size() > 2 && !params[2].isNull()) {
+        UniValue keys = params[2].get_array();
+        for (size_t idx = 0; idx < keys.size(); idx++) {
+            UniValue k = keys[idx];
+            std::string strSecret = k.get_str();
+
+            auto spendingkey = DecodeSpendingKey(strSecret);
+            if (!IsValidSpendingKey(spendingkey)) {
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid spending key");
+            }
+
+            vecSecret.push_back(spendingkey);
+        }
+    }
+    /**
+    * SCENARIO #3
+    *
+    * zaddr -> taddrs
+     *      -> zaddrs
+    *
+    * There are no zaddrs or joinsplits involved.
+    */
+
+    UniValue obj(UniValue::VOBJ);
+    CAmount jsChange = 0;   // this is updated after each joinsplit
+    int changeOutputIndex = -1; // this is updated after each joinsplit if jsChange > 0
+    bool vpubNewProcessed = false;  // updated when vpub_new for miner fee and taddr outputs is set in last joinsplit
+    CAmount vpubNewTarget = ASYNC_RPC_OPERATION_DEFAULT_MINERS_FEE;
+    if (t_outputs_total > 0) {
+        vpubNewTarget += t_outputs_total;
+    }
+
+    // Keep track of treestate within this transaction
+    boost::unordered_map<uint256, ZCIncrementalMerkleTree, CCoinsKeyHasher> intermediates;
+    std::vector<uint256> previousCommitments;
+
+    PaymentAddress frompaymentaddress_;
+    SpendingKey spendingkey_;
+
+    while (!vpubNewProcessed) {
+        AsyncJoinSplitInfo info;
+        info.vpub_old = 0;
+        info.vpub_new = 0;
+
+        CAmount jsInputValue = 0;
+        uint256 jsAnchor;
+        std::vector<boost::optional<ZCIncrementalWitness>> witnesses;
+
+        JSDescription prevJoinSplit;
+
+        // Keep track of previous JoinSplit and its commitments
+        if (tx_.vjoinsplit.size() > 0) {
+            prevJoinSplit = tx_.vjoinsplit.back();
+        }
+
+        // If there is no change, the chain has terminated so we can reset the tracked treestate.
+        if (jsChange==0 && tx_.vjoinsplit.size() > 0) {
+            intermediates.clear();
+            previousCommitments.clear();
+        }
+
+        //
+        // Consume change as the first input of the JoinSplit.
+        //
+        if (jsChange > 0) {
+            LOCK2(cs_main, pwalletMain->cs_wallet);
+
+            // Update tree state with previous joinsplit
+            ZCIncrementalMerkleTree tree;
+            auto it = intermediates.find(prevJoinSplit.anchor);
+            if (it != intermediates.end()) {
+                tree = it->second;
+            } else if (!pcoinsTip->GetSproutAnchorAt(prevJoinSplit.anchor, tree)) {
+                throw JSONRPCError(RPC_WALLET_ERROR, "Could not find previous JoinSplit anchor");
+            }
+
+            assert(changeOutputIndex != -1);
+            boost::optional<ZCIncrementalWitness> changeWitness;
+            int n = 0;
+            for (const uint256& commitment : prevJoinSplit.commitments) {
+                tree.append(commitment);
+                previousCommitments.push_back(commitment);
+                if (!changeWitness && changeOutputIndex == n++) {
+                    changeWitness = tree.witness();
+                } else if (changeWitness) {
+                    changeWitness.get().append(commitment);
+                }
+            }
+            if (changeWitness) {
+                witnesses.push_back(changeWitness);
+            }
+            jsAnchor = tree.root();
+            intermediates.insert(std::make_pair(tree.root(), tree));    // chained js are interstitial (found in between block boundaries)
+
+            // Decrypt the change note's ciphertext to retrieve some data we need
+            ZCNoteDecryption decryptor(boost::get<libzcash::SproutSpendingKey>(spendingkey_).receiving_key());
+            auto hSig = prevJoinSplit.h_sig(*pzcashParams, tx_.joinSplitPubKey);
+            try {
+                SproutNotePlaintext plaintext = SproutNotePlaintext::decrypt(
+                        decryptor,
+                        prevJoinSplit.ciphertexts[changeOutputIndex],
+                        prevJoinSplit.ephemeralKey,
+                        hSig,
+                        (unsigned char) changeOutputIndex);
+
+                SproutNote note = plaintext.note(boost::get<libzcash::SproutPaymentAddress>(frompaymentaddress_));
+                info.notes.push_back(note);
+
+                jsInputValue += plaintext.value();
+
+            } catch (const std::exception& e) {
+                throw JSONRPCError(RPC_WALLET_ERROR, strprintf("Error decrypting output note of previous JoinSplit: %s", e.what()));
+            }
+        }
+
+        //
+        // Consume spendable non-change notes
+        //
+        std::vector<SproutNote> vInputNotes;
+        std::vector<JSOutPoint> vOutPoints;
+        std::vector<boost::optional<ZCIncrementalWitness>> vInputWitnesses;
+        uint256 inputAnchor;
+        int numInputsNeeded = (jsChange>0) ? 1 : 0;
+        while (numInputsNeeded++ < ZC_NUM_JS_INPUTS && zInputsDeque.size() > 0) {
+            SendManyInputJSOP t = zInputsDeque.front();
+            JSOutPoint jso = std::get<0>(t);
+            SproutNote note = std::get<1>(t);
+            CAmount noteFunds = std::get<2>(t);
+            zInputsDeque.pop_front();
+
+            WitnessAnchorData wad = jsopWitnessAnchorMap[ jso.ToString() ];
+            vInputWitnesses.push_back(wad.witness);
+            if (inputAnchor.IsNull()) {
+                inputAnchor = wad.anchor;
+            } else if (inputAnchor != wad.anchor) {
+                throw JSONRPCError(RPC_WALLET_ERROR, "Selected input notes do not share the same anchor");
+            }
+
+            vOutPoints.push_back(jso);
+            vInputNotes.push_back(note);
+
+            if(!Find_Spendingkey_PaymentAddr(vecSecret, note.a_pk, frompaymentaddress_, spendingkey_))
+                throw JSONRPCError(RPC_WALLET_ERROR, "no secrect input");
+
+            jsInputValue += noteFunds;
+        }
+
+        // Add history of previous commitments to witness
+        if (vInputNotes.size() > 0) {
+
+            if (vInputWitnesses.size()==0) {
+                throw JSONRPCError(RPC_WALLET_ERROR, "Could not find witness for note commitment");
+            }
+
+            for (auto & optionalWitness : vInputWitnesses) {
+                if (!optionalWitness) {
+                    throw JSONRPCError(RPC_WALLET_ERROR, "Witness for note commitment is null");
+                }
+                ZCIncrementalWitness w = *optionalWitness; // could use .get();
+                if (jsChange > 0) {
+                    for (const uint256& commitment : previousCommitments) {
+                        w.append(commitment);
+                    }
+                    if (jsAnchor != w.root()) {
+                        throw JSONRPCError(RPC_WALLET_ERROR, "Witness for spendable note does not have same anchor as change input");
+                    }
+                }
+                witnesses.push_back(w);
+            }
+
+            // The jsAnchor is null if this JoinSplit is at the start of a new chain
+            if (jsAnchor.IsNull()) {
+                jsAnchor = inputAnchor;
+            }
+
+            // Add spendable notes as inputs
+            std::copy(vInputNotes.begin(), vInputNotes.end(), std::back_inserter(info.notes));
+        }
+
+        // Find recipient to transfer funds to
+        std::string address, hexMemo;
+        CAmount value = 0;
+        if (zOutputsDeque.size() > 0) {
+            SendManyRecipient smr = zOutputsDeque.front();
+            address = std::get<0>(smr);
+            value = std::get<1>(smr);
+            hexMemo = std::get<2>(smr);
+            zOutputsDeque.pop_front();
+        }
+
+        // Reset change
+        jsChange = 0;
+        CAmount outAmount = value;
+
+        // Set vpub_new in the last joinsplit (when there are no more notes to spend or zaddr outputs to satisfy)
+        if (zOutputsDeque.size() == 0 && zInputsDeque.size() == 0) {
+            assert(!vpubNewProcessed);
+            if (jsInputValue < vpubNewTarget) {
+                throw JSONRPCError(RPC_WALLET_ERROR,
+                                   ("Insufficient funds  sign crawtransaction_ok"));
+            }
+            outAmount += vpubNewTarget;
+            info.vpub_new += vpubNewTarget; // funds flowing back to public pool
+            vpubNewProcessed = true;
+            jsChange = jsInputValue - outAmount;
+            assert(jsChange >= 0);
+        }
+        else {
+            // This is not the last joinsplit, so compute change and any amount still due to the recipient
+            if (jsInputValue > outAmount) {
+                jsChange = jsInputValue - outAmount;
+            } else if (outAmount > jsInputValue) {
+                // Any amount due is owed to the recipient.  Let the miners fee get paid first.
+                CAmount due = outAmount - jsInputValue;
+                SendManyRecipient r = SendManyRecipient(address, due, hexMemo);
+                zOutputsDeque.push_front(r);
+
+                // reduce the amount being sent right now to the value of all inputs
+                value = jsInputValue;
+            }
+        }
+
+        // create output for recipient
+        if (address.empty()) {
+            assert(value==0);
+            info.vjsout.push_back(JSOutput());  // dummy output while we accumulate funds into a change note for vpub_new
+        } else {
+            PaymentAddress pa = DecodePaymentAddress(address);
+            JSOutput jso = JSOutput(boost::get<libzcash::SproutPaymentAddress>(pa), value);
+            if (hexMemo.size() > 0) {
+                jso.memo = get_memo_from_hex_string(hexMemo);
+            }
+            info.vjsout.push_back(jso);
+        }
+
+        // create output for any change
+        if (jsChange>0) {
+            info.vjsout.push_back(JSOutput(boost::get<libzcash::SproutPaymentAddress>(frompaymentaddress_), jsChange));
+        }
+
+        obj = perform_joinsplit(info, witnesses, jsAnchor, spendingkey_, tx_z, joinSplitPrivKey_);
+
+        if (jsChange > 0) {
+            changeOutputIndex = find_output_ok(obj, 1);
+        }
+    }
+
+    UniValue rawtxnValue = find_value(obj, "rawtxn");
+    if (rawtxnValue.isNull()) {
+        throw JSONRPCError(RPC_WALLET_ERROR, "Missing hex data for raw transaction");
+    }
+
+    UniValue paramTx(UniValue::VARR);
+    paramTx.push_back(rawtxnValue);
+    for (int i=1; i<params.size(); i++){
+        if (i == 2)
+            paramTx.push_back( UniValue(UniValue::VARR));
+        else
+            paramTx.push_back(params[i]);
+    }
+    return signrawtransaction(paramTx, false);
 }

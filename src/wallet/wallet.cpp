@@ -132,7 +132,6 @@ CPubKey CWallet::GenerateNewKey()
 
     CKey secret;
     secret.MakeNewKey(fCompressed);
-
     // Compressed public keys were introduced in version 0.6.0
     if (fCompressed)
         SetMinVersion(FEATURE_COMPRPUBKEY);
@@ -3721,6 +3720,92 @@ void CWallet::GetFilteredNotes(std::vector<CSproutNotePlaintextEntry> & outEntri
     }
 
     GetFilteredNotes(outEntries, filterAddresses, minDepth, ignoreSpent, ignoreUnspendable);
+}
+
+
+/**
+ * Find notes in the wallet filtered by payment address, min depth and ability to spend.
+ * These notes are decrypted and added to the output parameter vector, outEntries.
+ */
+void CWallet::GetFilteredNotes_ok(std::vector<CSproutNotePlaintextEntry> & outEntries, uint256 utxo, int jsindex, int minDepth, bool ignoreSpent, bool ignoreUnspendable)
+{
+
+    {
+        LOCK2(cs_main, cs_wallet);
+        const CWalletTx* parent = GetWalletTx(utxo);
+        if(parent != NULL) {
+            CWalletTx wtx = *parent;
+
+            // Filter the transactions before checking for notes
+            if (!CheckFinalTx(wtx) || wtx.GetBlocksToMaturity() > 0 || wtx.GetDepthInMainChain() < minDepth) {
+                return;
+            }
+
+            if (wtx.mapNoteData.size() == 0) {
+                return;
+            }
+
+            for (auto &pair : wtx.mapNoteData) {
+                JSOutPoint jsop = pair.first;
+                CNoteData nd = pair.second;
+                SproutPaymentAddress pa = nd.address;
+
+
+                // skip note which has been spent
+                if (ignoreSpent && nd.nullifier && IsSpent(*nd.nullifier)) {
+                    continue;
+                }
+
+                // skip notes which cannot be spent
+                if (ignoreUnspendable && !HaveSpendingKey(pa)) {
+                    continue;
+                }
+
+                // skip locked notes
+                if (IsLockedNote(jsop)) {
+                    continue;
+                }
+
+                int i = jsop.js; // Index into CTransaction.vjoinsplit
+                int j = jsop.n; // Index into JSDescription.ciphertexts
+
+                if (i != jsindex){
+                    continue;
+                }
+
+                // Get cached decryptor
+                ZCNoteDecryption decryptor;
+                if (!GetNoteDecryptor(pa, decryptor)) {
+                    // Note decryptors are created when the wallet is loaded, so it should always exist
+                    throw std::runtime_error(strprintf("Could not find note decryptor for payment address %s",
+                                                       EncodePaymentAddress(pa)));
+                }
+
+                // determine amount of funds in the note
+                auto hSig = wtx.vjoinsplit[i].h_sig(*pzcashParams, wtx.joinSplitPubKey);
+                try {
+                    SproutNotePlaintext plaintext = SproutNotePlaintext::decrypt(
+                            decryptor,
+                            wtx.vjoinsplit[i].ciphertexts[j],
+                            wtx.vjoinsplit[i].ephemeralKey,
+                            hSig,
+                            (unsigned char) j);
+
+                    outEntries.push_back(CSproutNotePlaintextEntry{jsop, pa, plaintext});
+
+                } catch (const note_decryption_failed &err) {
+                    // Couldn't decrypt with this spending key
+                    throw std::runtime_error(
+                            strprintf("Could not decrypt note for payment address %s", EncodePaymentAddress(pa)));
+                } catch (const std::exception &exc) {
+                    // Unexpected failure
+                    throw std::runtime_error(strprintf("Error while decrypting note for payment address %s: %s",
+                                                       EncodePaymentAddress(pa), exc.what()));
+                }
+            }
+        }
+    }
+
 }
 
 /**
