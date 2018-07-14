@@ -1,0 +1,592 @@
+GNU Make 3.82
+Built for x86_64-redhat-linux-gnu
+Copyright (C) 2010  Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+gcc (GCC) 7.3.0
+Copyright (C) 2017 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+g++ (GCC) 7.3.0
+Copyright (C) 2017 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+GNU assembler version 2.27-27.base.el7
+Copyright (C) 2016 Free Software Foundation, Inc.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or later.
+This program has absolutely no warranty.
+This assembler was configured for a target of `x86_64-redhat-linux'.
+GNU ld version 2.27-27.base.el7
+make: Entering directory `/home/zcash/depends'
+rm -rf /home/zcash/depends/x86_64-unknown-linux-gnu
+mkdir -p /home/zcash/depends/x86_64-unknown-linux-gnu
+echo copying packages: native_ccache boost openssl libevent zeromq libgmp libsodium googletest rust crate_arrayvec crate_bellman crate_bitflags crate_bit_vec crate_blake2_rfc crate_byteorder crate_constant_time_eq crate_crossbeam crate_digest crate_fuchsia_zircon crate_fuchsia_zircon_sys crate_futures_cpupool crate_futures crate_generic_array crate_lazy_static crate_libc crate_nodrop crate_num_cpus crate_pairing crate_rand crate_sapling_crypto crate_typenum crate_winapi_i686_pc_windows_gnu crate_winapi crate_winapi_x86_64_pc_windows_gnu librustzcash bdb
+copying packages: native_ccache boost openssl libevent zeromq libgmp libsodium googletest rust crate_arrayvec crate_bellman crate_bitflags crate_bit_vec crate_blake2_rfc crate_byteorder crate_constant_time_eq crate_crossbeam crate_digest crate_fuchsia_zircon crate_fuchsia_zircon_sys crate_futures_cpupool crate_futures crate_generic_array crate_lazy_static crate_libc crate_nodrop crate_num_cpus crate_pairing crate_rand crate_sapling_crypto crate_typenum crate_winapi_i686_pc_windows_gnu crate_winapi crate_winapi_x86_64_pc_windows_gnu librustzcash bdb
+echo to: /home/zcash/depends/x86_64-unknown-linux-gnu
+to: /home/zcash/depends/x86_64-unknown-linux-gnu
+cd /home/zcash/depends/x86_64-unknown-linux-gnu;  tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/native_ccache/native_ccache-3.3.1-8b0ad5e0a69.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/boost/boost-1_66_0-6ca30f54347.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/openssl/openssl-1.1.0h-f156af2bd6a.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/libevent/libevent-2.1.8-86e9925e824.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/zeromq/zeromq-4.2.1-4170fb50f0a.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/libgmp/libgmp-6.1.1-7b1e36f9c9d.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/libsodium/libsodium-1.0.15-e0921d72a6a.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/googletest/googletest-1.8.0-08b06cc01f9.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/rust/rust-1.26.0-5be2ead80c5.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_arrayvec/crate_arrayvec-0.4.7-2465fe2d44d.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_bellman/crate_bellman-0.1.0-3b892e96edc.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_bitflags/crate_bitflags-1.0.1-97b95b42daa.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_bit_vec/crate_bit_vec-0.4.4-611b7e812f8.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_blake2_rfc/crate_blake2_rfc--bb3151fb3f0.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_byteorder/crate_byteorder-1.2.2-331a89ccfab.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_constant_time_eq/crate_constant_time_eq-0.1.3-100ff7655c5.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_crossbeam/crate_crossbeam-0.3.2-aede1ba22c1.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_digest/crate_digest-0.7.2-4e10caf8529.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_fuchsia_zircon/crate_fuchsia_zircon-0.3.3-2a7bf9cb290.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_fuchsia_zircon_sys/crate_fuchsia_zircon_sys-0.3.3-e8443aa69bc.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_futures_cpupool/crate_futures_cpupool-0.1.8-e60c107a849.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_futures/crate_futures-0.1.21-7887f1a1c23.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_generic_array/crate_generic_array-0.9.0-6fe782633e4.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_lazy_static/crate_lazy_static-1.0.0-308f2a6fdf1.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_libc/crate_libc-0.2.40-0af959160da.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_nodrop/crate_nodrop-0.1.12-6910df13c9b.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_num_cpus/crate_num_cpus-1.8.0-84a7856553e.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_pairing/crate_pairing-0.14.2-2a95e266399.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_rand/crate_rand-0.4.2-c4ee04643be.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_sapling_crypto/crate_sapling_crypto--cccf63a1591.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_typenum/crate_typenum-1.10.0-15a0a8d4f59.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_winapi_i686_pc_windows_gnu/crate_winapi_i686_pc_windows_gnu-0.4.0-2bb8ddbd3eb.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_winapi/crate_winapi-0.3.4-7b0172ccdba.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/crate_winapi_x86_64_pc_windows_gnu/crate_winapi_x86_64_pc_windows_gnu-0.4.0-33dd257433f.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/librustzcash/librustzcash-0.1-e8db754e92a.tar.gz;   tar xf /home/zcash/depends/built/x86_64-unknown-linux-gnu/bdb/bdb-6.2.23-3798d5b2d88.tar.gz; 
+touch /home/zcash/depends/x86_64-unknown-linux-gnu/.stamp_25b2dcf9910
+sed -e 's|@HOST@|x86_64-unknown-linux-gnu|' \
+            -e 's|@CC@|gcc -m64|' \
+            -e 's|@CXX@|g++ -m64|' \
+            -e 's|@AR@|ar|' \
+            -e 's|@RANLIB@|ranlib|' \
+            -e 's|@NM@|nm|' \
+            -e 's|@STRIP@|strip|' \
+            -e 's|@build_os@|linux|' \
+            -e 's|@host_os@|linux|' \
+            -e 's|@CFLAGS@|-pipe -O1|' \
+            -e 's|@CXXFLAGS@|-pipe -O1|' \
+            -e 's|@CPPFLAGS@||' \
+            -e 's|@LDFLAGS@||' \
+            -e 's|@no_wallet@||' \
+            -e 's|@debug@||' \
+            config.site.in > /home/zcash/depends/x86_64-unknown-linux-gnu/share/config.site
+touch /home/zcash/depends/x86_64-unknown-linux-gnu/share/config.site
+make: Leaving directory `/home/zcash/depends'
+libtoolize: putting auxiliary files in AC_CONFIG_AUX_DIR, `build-aux'.
+libtoolize: copying file `build-aux/ltmain.sh'
+libtoolize: putting macros in AC_CONFIG_MACRO_DIR, `build-aux/m4'.
+libtoolize: copying file `build-aux/m4/libtool.m4'
+libtoolize: copying file `build-aux/m4/ltoptions.m4'
+libtoolize: copying file `build-aux/m4/ltsugar.m4'
+libtoolize: copying file `build-aux/m4/ltversion.m4'
+libtoolize: copying file `build-aux/m4/lt~obsolete.m4'
+libtoolize: putting auxiliary files in AC_CONFIG_AUX_DIR, `build-aux'.
+libtoolize: copying file `build-aux/ltmain.sh'
+libtoolize: putting macros in AC_CONFIG_MACRO_DIR, `build-aux/m4'.
+libtoolize: copying file `build-aux/m4/libtool.m4'
+libtoolize: copying file `build-aux/m4/ltoptions.m4'
+libtoolize: copying file `build-aux/m4/ltsugar.m4'
+libtoolize: copying file `build-aux/m4/ltversion.m4'
+libtoolize: copying file `build-aux/m4/lt~obsolete.m4'
+libtoolize: putting auxiliary files in AC_CONFIG_AUX_DIR, `build-aux'.
+libtoolize: copying file `build-aux/ltmain.sh'
+libtoolize: putting macros in AC_CONFIG_MACRO_DIR, `build-aux/m4'.
+libtoolize: copying file `build-aux/m4/libtool.m4'
+libtoolize: copying file `build-aux/m4/ltoptions.m4'
+libtoolize: copying file `build-aux/m4/ltsugar.m4'
+libtoolize: copying file `build-aux/m4/ltversion.m4'
+libtoolize: copying file `build-aux/m4/lt~obsolete.m4'
+configure: loading site script /home/zcash/depends/x86_64-unknown-linux-gnu/share/config.site
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for x86_64-unknown-linux-gnu-strip... no
+checking for strip... strip
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+checking how to create a pax tar archive... gnutar
+checking whether to enable maintainer-specific portions of Makefiles... yes
+checking whether make supports nested variables... (cached) yes
+checking whether the C++ compiler works... yes
+checking for C++ compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ -m64 accepts -g... yes
+checking for style of include used by make... GNU
+checking dependency style of g++ -m64... gcc3
+checking for x86_64-unknown-linux-gnu-g++... g++ -m64
+checking whether we are using the GNU Objective C++ compiler... no
+checking whether g++ -m64 accepts -g... no
+checking dependency style of g++ -m64... gcc3
+checking whether g++ -m64 supports C++11 features with -std=c++11... yes
+checking whether std::atomic can be used without link library... yes
+checking how to print strings... printf
+checking for x86_64-unknown-linux-gnu-gcc... gcc -m64
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -m64 accepts -g... yes
+checking for gcc -m64 option to accept ISO C89... none needed
+checking dependency style of gcc -m64... gcc3
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -m64... /bin/ld
+checking if the linker (/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... nm
+checking the name lister (nm) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking how to convert x86_64-unknown-linux-gnu file names to x86_64-unknown-linux-gnu format... func_convert_file_noop
+checking how to convert x86_64-unknown-linux-gnu file names to toolchain format... func_convert_file_noop
+checking for /bin/ld option to reload object files... -r
+checking for x86_64-unknown-linux-gnu-objdump... no
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for x86_64-unknown-linux-gnu-dlltool... no
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for x86_64-unknown-linux-gnu-ar... ar
+checking for archiver @FILE support... @
+checking for x86_64-unknown-linux-gnu-strip... strip
+checking for x86_64-unknown-linux-gnu-ranlib... ranlib
+checking command to parse nm output from gcc -m64 object... ok
+checking for sysroot... no
+checking for x86_64-unknown-linux-gnu-mt... no
+checking for mt... no
+checking if : is a manifest tool... no
+checking how to run the C preprocessor... gcc -m64 -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if gcc -m64 supports -fno-rtti -fno-exceptions... no
+checking for gcc -m64 option to produce PIC... -fPIC -DPIC
+checking if gcc -m64 PIC flag -fPIC -DPIC works... yes
+checking if gcc -m64 static flag -static works... yes
+checking if gcc -m64 supports -c -o file.o... yes
+checking if gcc -m64 supports -c -o file.o... (cached) yes
+checking whether the gcc -m64 linker (/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... yes
+checking how to run the C++ preprocessor... g++ -m64 -std=c++11 -E
+checking for ld used by g++ -m64 -std=c++11... /bin/ld -m elf_x86_64
+checking if the linker (/bin/ld -m elf_x86_64) is GNU ld... yes
+checking whether the g++ -m64 -std=c++11 linker (/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking for g++ -m64 -std=c++11 option to produce PIC... -fPIC -DPIC
+checking if g++ -m64 -std=c++11 PIC flag -fPIC -DPIC works... yes
+checking if g++ -m64 -std=c++11 static flag -static works... yes
+checking if g++ -m64 -std=c++11 supports -c -o file.o... yes
+checking if g++ -m64 -std=c++11 supports -c -o file.o... (cached) yes
+checking whether the g++ -m64 -std=c++11 linker (/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking dynamic linker characteristics... (cached) GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking for x86_64-unknown-linux-gnu-ar... no
+checking for ar... (cached) ar
+checking for x86_64-unknown-linux-gnu-ranlib... no
+checking for ranlib... (cached) ranlib
+checking for x86_64-unknown-linux-gnu-strip... no
+checking for strip... /bin/strip
+checking for x86_64-unknown-linux-gnu-gcov... no
+checking for gcov... /usr/local/bin/gcov
+checking for lcov... no
+checking for genhtml... no
+checking for git... /bin/git
+checking for ccache... /home/zcash/depends/x86_64-unknown-linux-gnu/share/../native/bin/ccache
+checking for xgettext... /bin/xgettext
+checking for hexdump... /bin/hexdump
+checking for x86_64-unknown-linux-gnu-readelf... no
+checking for readelf... /bin/readelf
+checking for x86_64-unknown-linux-gnu-c++filt... no
+checking for c++filt... /bin/c++filt
+checking whether C++ compiler accepts -Werror... yes
+checking for x86_64-unknown-linux-gnu-pkg-config... /bin/pkg-config --static
+checking pkg-config is at least version 0.9.0... yes
+checking whether byte ordering is bigendian... no
+checking whether gcc -m64 is Clang... no
+checking whether pthreads work with -pthread... yes
+checking for joinable pthread attribute... PTHREAD_CREATE_JOINABLE
+checking whether more special flags are required for pthreads... no
+checking for PTHREAD_PRIO_INHERIT... yes
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... no
+checking whether strerror_r is declared... yes
+checking for strerror_r... yes
+checking whether strerror_r returns char *... yes
+checking whether the linker accepts -Wl,--large-address-aware... no
+checking for __attribute__((visibility))... yes
+checking for __attribute__((dllexport))... no
+checking for __attribute__((dllimport))... no
+checking for library containing clock_gettime... none required
+checking whether C++ compiler accepts -fPIC... yes
+checking whether C++ compiler accepts -Wformat... yes
+checking whether C++ compiler accepts -Wformat-security... yes
+checking whether C++ compiler accepts -Wstack-protector... yes
+checking whether C++ compiler accepts -fstack-protector-all... yes
+checking whether C++ preprocessor accepts -D_FORTIFY_SOURCE=2... yes
+checking whether C++ preprocessor accepts -U_FORTIFY_SOURCE... yes
+checking whether the linker accepts -Wl,-z,relro... yes
+checking whether the linker accepts -Wl,-z,now... yes
+checking whether C++ compiler accepts -fPIE... yes
+checking whether the linker accepts -pie... yes
+checking endian.h usability... yes
+checking endian.h presence... yes
+checking for endian.h... yes
+checking sys/endian.h usability... no
+checking sys/endian.h presence... no
+checking for sys/endian.h... no
+checking byteswap.h usability... yes
+checking byteswap.h presence... yes
+checking for byteswap.h... yes
+checking stdio.h usability... yes
+checking stdio.h presence... yes
+checking for stdio.h... yes
+checking for stdlib.h... (cached) yes
+checking for unistd.h... (cached) yes
+checking for strings.h... (cached) yes
+checking for sys/types.h... (cached) yes
+checking for sys/stat.h... (cached) yes
+checking sys/select.h usability... yes
+checking sys/select.h presence... yes
+checking for sys/select.h... yes
+checking sys/prctl.h usability... yes
+checking sys/prctl.h presence... yes
+checking for sys/prctl.h... yes
+checking for library containing getaddrinfo_a... -lanl
+checking for library containing inet_pton... none required
+checking whether strnlen is declared... yes
+checking whether le16toh is declared... yes
+checking whether le32toh is declared... yes
+checking whether le64toh is declared... yes
+checking whether htole16 is declared... yes
+checking whether htole32 is declared... yes
+checking whether htole64 is declared... yes
+checking whether be16toh is declared... yes
+checking whether be32toh is declared... yes
+checking whether be64toh is declared... yes
+checking whether htobe16 is declared... yes
+checking whether htobe32 is declared... yes
+checking whether htobe64 is declared... yes
+checking whether bswap_16 is declared... yes
+checking whether bswap_32 is declared... yes
+checking whether bswap_64 is declared... yes
+checking for MSG_NOSIGNAL... yes
+checking for visibility attribute... yes
+checking for Berkeley DB C++ headers... default
+checking for main in -ldb_cxx-6.2... yes
+checking for boostlib >= 1.62... yes
+checking whether the Boost::System library is available... yes
+checking for exit in -lboost_system... yes
+checking whether the Boost::Filesystem library is available... yes
+checking for exit in -lboost_filesystem... yes
+checking whether the Boost::Program_Options library is available... yes
+checking for exit in -lboost_program_options... yes
+checking whether the Boost::Thread library is available... yes
+checking for exit in -lboost_thread... yes
+checking whether the Boost::Chrono library is available... yes
+checking for exit in -lboost_chrono... yes
+checking whether the Boost::Unit_Test_Framework library is available... yes
+checking for dynamic linked boost test... no
+checking for SSL... yes
+checking for CRYPTO... yes
+checking for EVENT... yes
+checking for EVENT_PTHREADS... yes
+checking for ZMQ... yes
+checking gmp.h usability... yes
+checking gmp.h presence... yes
+checking for gmp.h... yes
+checking for __gmpn_sub_n in -lgmp... yes
+checking gmpxx.h usability... yes
+checking gmpxx.h presence... yes
+checking for gmpxx.h... yes
+checking for main in -lgmpxx... yes
+checking for OpenMP flag of C++ compiler... -fopenmp
+checking whether C++ compiler accepts -fwrapv... yes
+checking whether C++ compiler accepts -fno-strict-aliasing... yes
+checking whether C++ compiler accepts -Wno-builtin-declaration-mismatch... yes
+checking whether to build bitcoind... yes
+checking whether to build utils (zcash-cli zcash-tx)... yes
+checking whether to build libraries... no
+checking if ccache should be used... yes
+checking whether C preprocessor accepts -Qunused-arguments... no
+checking if wallet should be enabled... yes
+checking if mining should be enabled... yes
+checking whether to build test_bitcoin... yes
+checking whether to reduce exports... no
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating src/Makefile
+config.status: creating doc/man/Makefile
+config.status: creating src/test/buildenv.py
+config.status: creating qa/pull-tester/run-bitcoind-for-test.sh
+config.status: creating qa/pull-tester/tests-config.sh
+config.status: creating src/config/bitcoin-config.h
+config.status: src/config/bitcoin-config.h is unchanged
+config.status: executing depfiles commands
+config.status: executing libtool commands
+=== configuring in src/secp256k1 (/home/zcash/src/secp256k1)
+configure: running /bin/sh ./configure --disable-option-checking '--prefix=/home/zcash/depends/x86_64-unknown-linux-gnu'  '--host=x86_64-unknown-linux-gnu' '--build=x86_64-unknown-linux-gnu' '--enable-hardening' '' '' '' '--enable-proton=no' '--enable-werror' 'CXXFLAGS=-g' 'build_alias=x86_64-unknown-linux-gnu' 'host_alias=x86_64-unknown-linux-gnu' 'target_alias=' 'CXX=g++' 'CC=gcc' '--disable-shared' '--with-pic' '--with-bignum=no' '--enable-module-recovery' --cache-file=/dev/null --srcdir=.
+configure: loading site script /home/zcash/depends/x86_64-unknown-linux-gnu/share/config.site
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for x86_64-unknown-linux-gnu-strip... no
+checking for strip... strip
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+checking how to print strings... printf
+checking for style of include used by make... GNU
+checking for x86_64-unknown-linux-gnu-gcc... gcc -m64
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -m64 accepts -g... yes
+checking for gcc -m64 option to accept ISO C89... none needed
+checking dependency style of gcc -m64... gcc3
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -m64... /bin/ld
+checking if the linker (/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... nm
+checking the name lister (nm) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking how to convert x86_64-unknown-linux-gnu file names to x86_64-unknown-linux-gnu format... func_convert_file_noop
+checking how to convert x86_64-unknown-linux-gnu file names to toolchain format... func_convert_file_noop
+checking for /bin/ld option to reload object files... -r
+checking for x86_64-unknown-linux-gnu-objdump... no
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for x86_64-unknown-linux-gnu-dlltool... no
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for x86_64-unknown-linux-gnu-ar... ar
+checking for archiver @FILE support... @
+checking for x86_64-unknown-linux-gnu-strip... strip
+checking for x86_64-unknown-linux-gnu-ranlib... ranlib
+checking command to parse nm output from gcc -m64 object... ok
+checking for sysroot... no
+checking for x86_64-unknown-linux-gnu-mt... no
+checking for mt... no
+checking if : is a manifest tool... no
+checking how to run the C preprocessor... gcc -m64 -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if gcc -m64 supports -fno-rtti -fno-exceptions... no
+checking for gcc -m64 option to produce PIC... -fPIC -DPIC
+checking if gcc -m64 PIC flag -fPIC -DPIC works... yes
+checking if gcc -m64 static flag -static works... yes
+checking if gcc -m64 supports -c -o file.o... yes
+checking if gcc -m64 supports -c -o file.o... (cached) yes
+checking whether the gcc -m64 linker (/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... no
+checking whether to build static libraries... yes
+checking whether make supports nested variables... (cached) yes
+checking for x86_64-unknown-linux-gnu-pkg-config... /bin/pkg-config --static
+checking pkg-config is at least version 0.9.0... yes
+checking for x86_64-unknown-linux-gnu-ar... no
+checking for ar... (cached) ar
+checking for x86_64-unknown-linux-gnu-ranlib... no
+checking for ranlib... (cached) ranlib
+checking for x86_64-unknown-linux-gnu-strip... no
+checking for strip... /bin/strip
+checking for gcc... gcc
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... (cached) none needed
+checking dependency style of gcc... (cached) gcc3
+checking how to run the C preprocessor... gcc -E
+checking whether gcc -m64 and cc understand -c and -o together... yes
+checking for gcc -m64 option to accept ISO C89... (cached) none needed
+checking dependency style of gcc -m64... gcc3
+checking if gcc -m64 supports -std=c89 -pedantic -Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes -Wno-unused-function -Wno-long-long -Wno-overlength-strings... yes
+checking if gcc -m64 supports -fvisibility=hidden... yes
+checking for __int128... yes
+checking for __builtin_expect... yes
+checking native compiler: gcc... ok
+checking for x86_64 assembly availability... yes
+checking for CRYPTO... yes
+checking for main in -lcrypto... yes
+checking for EC functions in libcrypto... no
+checking jni headers... /root/jdk1.8.0_171/include
+checking whether byte ordering is bigendian... no
+configure: Using static precomputation: yes
+configure: Using assembly optimizations: x86_64
+configure: Using field implementation: 64bit
+configure: Using bignum implementation: no
+configure: Using scalar implementation: 64bit
+configure: Using endomorphism optimizations: no
+configure: Building for coverage analysis: no
+configure: Building ECDH module: no
+configure: Building ECDSA pubkey recovery module: yes
+configure: Using jni: no
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating libsecp256k1.pc
+config.status: creating src/libsecp256k1-config.h
+config.status: src/libsecp256k1-config.h is unchanged
+config.status: executing depfiles commands
+config.status: executing libtool commands
+=== configuring in src/snark (/home/zcash/src/snark)
+=== configuring in src/univalue (/home/zcash/src/univalue)
+configure: running /bin/sh ./configure --disable-option-checking '--prefix=/home/zcash/depends/x86_64-unknown-linux-gnu'  '--host=x86_64-unknown-linux-gnu' '--build=x86_64-unknown-linux-gnu' '--enable-hardening' '' '' '' '--enable-proton=no' '--enable-werror' 'CXXFLAGS=-g' 'build_alias=x86_64-unknown-linux-gnu' 'host_alias=x86_64-unknown-linux-gnu' 'target_alias=' 'CXX=g++' 'CC=gcc' '--disable-shared' '--with-pic' '--with-bignum=no' '--enable-module-recovery' --cache-file=/dev/null --srcdir=.
+configure: loading site script /home/zcash/depends/x86_64-unknown-linux-gnu/share/config.site
+checking whether make supports nested variables... yes
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for x86_64-unknown-linux-gnu-strip... no
+checking for strip... strip
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking how to print strings... printf
+checking for style of include used by make... GNU
+checking for x86_64-unknown-linux-gnu-gcc... gcc -m64
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -m64 accepts -g... yes
+checking for gcc -m64 option to accept ISO C89... none needed
+checking dependency style of gcc -m64... gcc3
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -m64... /bin/ld
+checking if the linker (/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... nm
+checking the name lister (nm) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking how to convert x86_64-unknown-linux-gnu file names to x86_64-unknown-linux-gnu format... func_convert_file_noop
+checking how to convert x86_64-unknown-linux-gnu file names to toolchain format... func_convert_file_noop
+checking for /bin/ld option to reload object files... -r
+checking for x86_64-unknown-linux-gnu-objdump... no
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for x86_64-unknown-linux-gnu-dlltool... no
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for x86_64-unknown-linux-gnu-ar... ar
+checking for archiver @FILE support... @
+checking for x86_64-unknown-linux-gnu-strip... strip
+checking for x86_64-unknown-linux-gnu-ranlib... ranlib
+checking command to parse nm output from gcc -m64 object... ok
+checking for sysroot... no
+checking for x86_64-unknown-linux-gnu-mt... no
+checking for mt... no
+checking if : is a manifest tool... no
+checking how to run the C preprocessor... gcc -m64 -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if gcc -m64 supports -fno-rtti -fno-exceptions... no
+checking for gcc -m64 option to produce PIC... -fPIC -DPIC
+checking if gcc -m64 PIC flag -fPIC -DPIC works... yes
+checking if gcc -m64 static flag -static works... yes
+checking if gcc -m64 supports -c -o file.o... yes
+checking if gcc -m64 supports -c -o file.o... (cached) yes
+checking whether the gcc -m64 linker (/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... no
+checking whether to build static libraries... yes
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ -m64 accepts -g... yes
+checking dependency style of g++ -m64... gcc3
+checking how to run the C++ preprocessor... g++ -m64 -E
+checking for ld used by g++ -m64... /bin/ld -m elf_x86_64
+checking if the linker (/bin/ld -m elf_x86_64) is GNU ld... yes
+checking whether the g++ -m64 linker (/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking for g++ -m64 option to produce PIC... -fPIC -DPIC
+checking if g++ -m64 PIC flag -fPIC -DPIC works... yes
+checking if g++ -m64 static flag -static works... yes
+checking if g++ -m64 supports -c -o file.o... yes
+checking if g++ -m64 supports -c -o file.o... (cached) yes
+checking whether the g++ -m64 linker (/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking dynamic linker characteristics... (cached) GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating pc/libunivalue.pc
+config.status: creating pc/libunivalue-uninstalled.pc
+config.status: creating univalue-config.h
+config.status: univalue-config.h is unchanged
+config.status: executing depfiles commands
+config.status: executing libtool commands
+Fixing libtool for -rpath problems.
+
+Options used to compile and link:
+  with wallet   = yes
+  with proton   = no
+  with zmq      = yes
+  with test     = yes
+  debug enabled = no
+  werror        = yes
+
+  target os     = linux
+  build os      = 
+
+  CC            = /home/zcash/depends/x86_64-unknown-linux-gnu/share/../native/bin/ccache gcc -m64
+  CFLAGS        = -pipe -O1 
+  CPPFLAGS      = -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE
+  CXX           = /home/zcash/depends/x86_64-unknown-linux-gnu/share/../native/bin/ccache g++ -m64 -std=c++11
+  CXXFLAGS      = -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch
+  LDFLAGS       = -L/home/zcash/depends/x86_64-unknown-linux-gnu/share/../lib 
+  ARFLAGS       = cr
+
+Making all in src
+make[1]: Entering directory `/home/zcash/src'
+make[2]: Entering directory `/home/zcash/src'
+make  -C secp256k1 libsecp256k1.la
+make[3]: Entering directory `/home/zcash/src/secp256k1'
+make[3]: Leaving directory `/home/zcash/src/secp256k1'
+make[2]: Leaving directory `/home/zcash/src'
+make[1]: Leaving directory `/home/zcash/src'
+Making all in doc/man
+make[1]: Entering directory `/home/zcash/doc/man'
+make[1]: Nothing to be done for `all'.
+make[1]: Leaving directory `/home/zcash/doc/man'
+make[1]: Entering directory `/home/zcash'
+make[1]: Nothing to be done for `all-am'.
+make[1]: Leaving directory `/home/zcash'
