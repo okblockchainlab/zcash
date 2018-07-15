@@ -1,6 +1,7 @@
-CC  = g++
-srcdir = /home/zcash/src
-darwindir = /home/zcash/depends
+CC  = clang++
+srcdir = /Users/wangwenfeng01/git/wallet/zcash/src
+darwindir = /Users/wangwenfeng01/git/wallet/zcash/depends
+osUserdir = /Users/wangwenfeng01/git/wallet/zcash/depends/x86_64-apple-darwin17.5.0
 
 LIBBITCOIN_CLI = libbitcoin_cli.a
 LIBUNIVALUE = univalue/.libs/libunivalue.a
@@ -11,10 +12,10 @@ LIBSNARK = snark/libsnark.a
 LIBBITCOIN_CRYPTO = crypto/libbitcoin_crypto.a
 
 
-BOOST_LIBS = -L/Users/wangwenfeng01/git/wallet/zcash/depends/x86_64-unknown-linux-gnu/lib -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lboost_chrono
-SSL_LIBS = -L/Users/wangwenfeng01/git/wallet/zcash/depends/x86_64-unknown-linux-gnu/lib -lssl -lcrypto
-CRYPTO_LIBS = -L/Users/wangwenfeng01/git/wallet/zcash/depends/x86_64-unknown-linux-gnu/lib -lcrypto
-EVENT_LIBS = -L/Users/wangwenfeng01/git/wallet/zcash/depends/x86_64-unknown-linux-gnu/lib -levent
+BOOST_LIBS = -L$(osUserdir)/lib -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lboost_chrono
+SSL_LIBS = -L$(osUserdir)/lib -lssl -lcrypto
+CRYPTO_LIBS = -L$(osUserdir)/lib -lcrypto
+EVENT_LIBS =-L$(osUserdir)/lib -levent
 LIBZCASH = libzcash.a
 LIBSNARK = snark/libsnark.a
 LIBBITCOIN_CRYPTO = crypto/libbitcoin_crypto.a
@@ -50,7 +51,6 @@ zcash_cli_LDADD = \
 TEST_INCLUDES = -I$(srcdir)/secp256k1/include -I$(darwindir)/x86_64-unknown-linux-gnu/include \
 -I$(srcdir) -I$(srcdir)/univalue/include  -I$(srcdir)/leveldb/include  -I$(srcdir)/zcash -I/root/jdk1.8.0_171/include/linux
 
-CC=g++
 CFLAGS  = -std=c++11
 
 LD_INCLUDES = -L$(srcdir)/secp256k1/.libs -L$(darwindir)/x86_64-unknown-linux-gnu/lib \
@@ -67,11 +67,19 @@ LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1 -lbitcoin_common 
 #	 -levent_pthreads -levent -lmemenv  -lunivalue -ldb_cxx-6.2 -lbitcoin_zmq -lzmq \
 #	 $(BOOST_LIBS) -o zcash-cli-ok.dylib
 
-zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
-	$(CC) -shared  bitcoin-cli-ok.o  $(zcash_cli_OBJECTS) $(zcash_cli_LDADD) \
-	 $(LD_INCLUDES)  $(LD_INCLUDES_ADDR)  -lbitcoin_wallet -lbitcoin_server -lleveldb \
-	 -levent_pthreads -levent -lmemenv  -lunivalue -ldb_cxx-6.2 -lbitcoin_zmq -lzmq \
-	 $(BOOST_LIBS) -o zcash-cli-ok.so
+#zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
+#	$(CC) -shared  bitcoin-cli-ok.o  $(zcash_cli_OBJECTS) $(zcash_cli_LDADD) \
+##	 $(LD_INCLUDES)  $(LD_INCLUDES_ADDR)  -lbitcoin_wallet -lbitcoin_server -lleveldb \
+#	 -levent_pthreads -levent -lmemenv  -lunivalue -ldb_cxx-6.2 -lbitcoin_zmq -lzmq \
+#	 $(BOOST_LIBS) -o zcash-cli-ok.so
 
+#bitcoin-cli-ok.o:bitcoin-cli-ok.cpp
+#	$(CC) $(CFLAGS) $(TEST_INCLUDES) -c bitcoin-cli-ok.cpp -o bitcoin-cli-ok.o
+
+
+
+zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
+	$(CC)  -shared  -m64 -std=c++11  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g  -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch  -pthread   -L$(osUserdir)/share/../lib  -o zcash-cli-ok.so bitcoin-cli-ok.o  libbitcoin_cli.a univalue/.libs/libunivalue.a libbitcoin_util.a -L$(osUserdir)/share/../lib -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lboost_chrono -pthread -L$(osUserdir)/lib -lssl -lcrypto -ldl   -pthread -L$(osUserdir)/lib -lcrypto -ldl   -L$(osUserdir)/lib -levent   libzcash.a snark/libsnark.a crypto/libbitcoin_crypto.a -lgmp -lgmpxx -lboost_system -lcrypto -lsodium -lrustzcash -ldl
 bitcoin-cli-ok.o:bitcoin-cli-ok.cpp
-	$(CC) $(CFLAGS) $(TEST_INCLUDES) -c bitcoin-cli-ok.cpp -o bitcoin-cli-ok.o
+	$(CC) -m64 -std=c++11 -DHAVE_CONFIG_H -I. -I../src/config $(TEST_INCLUDES) -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I$(osUserdir)/share/../include -I./leveldb/include -I./leveldb/helpers/memenv   -I$(osUserdir)/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I$(osUserdir)/include   -I$(osUserdir)/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fwrapv -fno-strict-aliasing  -MT bitcoin-cli-ok.o -MD -MP -MF .deps/bitcoin-cli-ok.Tpo -c -o bitcoin-cli-ok.o `test -f 'bitcoin-cli-ok.cpp' || echo './'`bitcoin-cli-ok.cpp
+

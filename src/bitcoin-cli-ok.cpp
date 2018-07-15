@@ -22,16 +22,6 @@
 #include "com_okcoin_vault_jni_CZcashj.h"
 #include "com_okcoin_vault_jni_CZcashOk.h"
 
-//add test h
-#include "JoinSplit.hpp"
-#include "amount.h"
-#include "streams.h"
-#include "version.h"
-#include "serialize.h"
-#include "wallet/wallet.h"
-#include "key_io.h"
-
-
 
 #define LOG(format, ...) printf(format, ##__VA_ARGS__)
 
