@@ -52,7 +52,7 @@ TEST_INCLUDES = -I$(srcdir)/secp256k1/include -I$(darwindir)/x86_64-unknown-linu
 
 CC=g++
 #CFLAGS  = -std=c++11 -pie -fPIE -pipe -O1 -g -fopenmp  -m64  -DHAVE_CONFIG_H -fno-strict-aliasing -Wno-builtin-declaration-mismatch
-CFLAGS   = -std=c++11 -fPIC
+CFLAGS   = -std=c++11 -fPIC -fPIE
 
 LD_INCLUDES = -L$(srcdir)/secp256k1/.libs -L$(darwindir)/x86_64-unknown-linux-gnu/lib \
 -L$(srcdir)/crypto -L$(srcdir) -L$(srcdir)/snark -L$(srcdir)/leveldb -L$(srcdir)/univalue/.libs
@@ -61,13 +61,13 @@ LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1 -lbitcoin_common 
 
 
 zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
-	$(CC) -shared -fPIC bitcoin-cli-ok.o  $(zcash_cli_OBJECTS) $(zcash_cli_LDADD) \
+	$(CC) -shared -fPIC -pie -pthread bitcoin-cli-ok.o  $(zcash_cli_OBJECTS) $(zcash_cli_LDADD) \
 	 $(LD_INCLUDES)  $(LD_INCLUDES_ADDR)  -lbitcoin_wallet -lbitcoin_server -lleveldb \
 	 -levent_pthreads -levent -lmemenv  -lunivalue -ldb_cxx-6.2 -lbitcoin_zmq -lzmq \
 	 $(BOOST_LIBS) -o zcash-cli-ok.so
 
-#zcash-cli-ok.so: bitcoin-cli-ok.o
-#	$(CC)   bitcoin-cli-ok.o   -o zcash-cli-ok.so \
+#zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
+#	$(CC)  -pthread -pie -fPIC bitcoin-cli-ok.o $(zcash_cli_OBJECTS)  -o zcash-cli-ok.so \
 #	 -L/home/zcash/depends/x86_64-unknown-linux-gnu/share/../lib \
 #	 -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lboost_chrono \
 
@@ -101,4 +101,4 @@ libbitcoin_util_a-utilstrencodings.o:utilstrencodings.cpp
 #	crypto/libbitcoin_crypto.a -lgmp -lgmpxx -lboost_system -lcrypto -lsodium -lrustzcash -ldl -lanl
 
 #bitcoin-cli-ok.o:bitcoin-cli-ok.cpp
-	$(CC) -m64 -std=c++11 -DHAVE_CONFIG_H -I. -I../src/config $(TEST_INCLUDES) -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT bitcoin-cli-ok.o -MD -MP -MF .deps/bitcoin-cli-ok.Tpo -c -o bitcoin-cli-ok.o `test -f 'bitcoin-cli-ok.cpp' || echo './'`bitcoin-cli-ok.cpp
+#	$(CC) -m64 -std=c++11 -DHAVE_CONFIG_H -I. -I../src/config $(TEST_INCLUDES) -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT bitcoin-cli-ok.o -MD -MP -MF .deps/bitcoin-cli-ok.Tpo -c -o bitcoin-cli-ok.o `test -f 'bitcoin-cli-ok.cpp' || echo './'`bitcoin-cli-ok.cpp
