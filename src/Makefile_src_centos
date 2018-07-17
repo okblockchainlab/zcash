@@ -61,10 +61,11 @@ LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1 -lbitcoin_common 
 
 
 zcash-cli-ok.so: bitcoin-cli-ok.o libbitcoin_util_a-clientversion.o
-	$(CC) -shared -fPIC -pie -pthread bitcoin-cli-ok.o libbitcoin_util_a-utiltime.o libbitcoin_util_a-util.o libbitcoin_util_a-utilstrencodings.o libbitcoin_util_a-clientversion.o $(zcash_cli_LDADD) \
-	 $(LD_INCLUDES)  $(LD_INCLUDES_ADDR)  -lbitcoin_wallet -lbitcoin_server -lleveldb \
-	 -levent_pthreads -levent -lmemenv  -lunivalue -ldb_cxx-6.2 -lbitcoin_zmq -lzmq \
-	 $(BOOST_LIBS) -o zcash-cli-ok.so
+	$(CC) -shared -fPIC -pie -pthread bitcoin-cli-ok.o libbitcoin_util_a-utiltime.o \
+	libbitcoin_util_a-util.o libbitcoin_util_a-utilstrencodings.o libbitcoin_util_a-clientversion.o $(zcash_cli_LDADD) \
+	$(LD_INCLUDES)  $(LD_INCLUDES_ADDR)  -lbitcoin_wallet -lbitcoin_server -lleveldb \
+	-levent_pthreads -levent -lmemenv  -lunivalue -ldb_cxx-6.2 -lbitcoin_zmq -lzmq \
+	$(BOOST_LIBS) -o zcash-cli-ok.so
 
 #zcash-cli-ok.so: bitcoin-cli-ok.o 
 #	$(CC)  -shared -pthread -pie -fPIC bitcoin-cli-ok.o -o zcash-cli-ok.so \
@@ -72,21 +73,21 @@ zcash-cli-ok.so: bitcoin-cli-ok.o libbitcoin_util_a-clientversion.o
 #	 -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lboost_chrono $(zcash_cli_LDADD) \
 
 
-bitcoin-cli-ok.o:bitcoin-cli-ok.cpp
+bitcoin-cli-ok.o: bitcoin-cli-ok.cpp
 	$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c bitcoin-cli-ok.cpp -o bitcoin-cli-ok.o
-libbitcoin_cli_a-rpcclient.o:rpcclient.cpp
+libbitcoin_cli_a-rpcclient.o: rpcclient.cpp
 	$(CC) $(CFLAGS) -DHAVE_CONFIG_H -I. -I../src/config  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT libbitcoin_cli_a-rpcclient.o -MD -MP -MF .deps/libbitcoin_cli_a-rpcclient.Tpo -c -o libbitcoin_cli_a-rpcclient.o `test -f 'rpcclient.cpp' || echo './'`rpcclient.cpp
-libbitcoin_util_a-chainparamsbase.o:chainparamsbase.cpp
+libbitcoin_util_a-chainparamsbase.o: chainparamsbase.cpp
 	$(CC) $(CFLAGS) -DHAVE_CONFIG_H -I. -I../src/config  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT libbitcoin_util_a-chainparamsbase.o -MD -MP -MF .deps/libbitcoin_util_a-chainparamsbase.Tpo -c -o libbitcoin_util_a-chainparamsbase.o `test -f 'chainparamsbase.cpp' || echo './'`chainparamsbase.cpp
-libbitcoin_util_a-clientversion.o:clientversion.cpp
+libbitcoin_util_a-clientversion.o: clientversion.cpp
 	$(CC) $(CFLAGS) -DHAVE_CONFIG_H -I. -I../src/config  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT libbitcoin_util_a-clientversion.o -MD -MP -MF .deps/libbitcoin_util_a-clientversion.Tpo -c -o libbitcoin_util_a-clientversion.o `test -f 'clientversion.cpp' || echo './'`clientversion.cpp
-libbitcoin_util_a-rpcprotocol.o:rpcprotocol.cpp
+libbitcoin_util_a-rpcprotocol.o: rpcprotocol.cpp
 	$(CC) $(CFLAGS) -DHAVE_CONFIG_H -I. -I../src/config  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT libbitcoin_util_a-rpcprotocol.o -MD -MP -MF .deps/libbitcoin_util_a-rpcprotocol.Tpo -c -o libbitcoin_util_a-rpcprotocol.o `test -f 'rpcprotocol.cpp' || echo './'`rpcprotocol.cpp
-libbitcoin_util_a-util.o:util.cpp
+libbitcoin_util_a-util.o: util.cpp
 	$(CC) $(CFLAGS) -DHAVE_CONFIG_H -I. -I../src/config  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT libbitcoin_util_a-util.o -MD -MP -MF .deps/libbitcoin_util_a-util.Tpo -c -o libbitcoin_util_a-util.o `test -f 'util.cpp' || echo './'`util.cpp
-libbitcoin_util_a-utilstrencodings.o:utilstrencodings.cpp
+libbitcoin_util_a-utilstrencodings.o: utilstrencodings.cpp
 	$(CC) $(CFLAGS) -DHAVE_CONFIG_H -I. -I../src/config  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT libbitcoin_util_a-utilstrencodings.o -MD -MP -MF .deps/libbitcoin_util_a-utilstrencodings.Tpo -c -o libbitcoin_util_a-utilstrencodings.o `test -f 'utilstrencodings.cpp' || echo './'`utilstrencodings.cpp
-libbitcoin_util_a-utiltime.o:utiltime.cpp
+libbitcoin_util_a-utiltime.o: utiltime.cpp
 	$(CC) $(CFLAGS) -DHAVE_CONFIG_H -I. -I../src/config  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT libbitcoin_util_a-utiltime.o -MD -MP -MF .deps/libbitcoin_util_a-utiltime.Tpo -c -o libbitcoin_util_a-utiltime.o `test -f 'utiltime.cpp' || echo './'`utiltime.cpp
 
 #zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
