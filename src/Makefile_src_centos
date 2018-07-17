@@ -32,7 +32,7 @@ zcash_cli_DEPENDENCIES = $(LIBBITCOIN_CLI) $(LIBUNIVALUE) \
 #       libbitcoin_util_a-rpcprotocol.o libbitcoin_util_a-util.o libbitcoin_util_a-utilstrencodings.o
 
 zcash_cli_OBJECTS =  libbitcoin_util_a-clientversion.o \
-        libbitcoin_util_a-util.o libbitcoin_util_a-utiltime.o libbitcoin_util_a-utilstrencodings.o
+        libbitcoin_util_a-util.o libbitcoin_util_a-utilstrencodings.o
 
 
 zcash_cli_LDADD = \
