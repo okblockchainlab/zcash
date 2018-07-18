@@ -31,10 +31,7 @@ zcash_cli_DEPENDENCIES = $(LIBBITCOIN_CLI) $(LIBUNIVALUE) \
 #zcash_cli_OBJECTS = libbitcoin_cli_a-rpcclient.o libbitcoin_util_a-chainparamsbase.o libbitcoin_util_a-clientversion.o \
 #       libbitcoin_util_a-rpcprotocol.o libbitcoin_util_a-util.o libbitcoin_util_a-utilstrencodings.o
 
-zcash_cli_OBJECTS =   libbitcoin_util_a-utiltime.o  \
-    libbitcoin_util_a-chainparamsbase.o libbitcoin_util_a-clientversion.o libbitcoin_util_a-rpcprotocol.o \
-    libbitcoin_util_a-util.o libbitcoin_util_a-utilstrencodings.o
-
+zcash_cli_OBJECTS =   libbitcoin_util_a-utiltime.o
 
 zcash_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
@@ -75,7 +72,7 @@ LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1 -lbitcoin_common 
 #    crypto/libbitcoin_crypto.a -lgmp -lgmpxx -lboost_system -lcrypto -lsodium -lrustzcash -ldl -lanl
 
 zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
-	$(CC) -shared -fPIC  -pthread bitcoin-cli-ok.o $(zcash_cli_OBJECTS) $(zcash_cli_LDADD)  \
+	$(CC) -shared -fPIC -pie -pthread bitcoin-cli-ok.o $(zcash_cli_OBJECTS) $(zcash_cli_LDADD)  \
 	$(LD_INCLUDES)  -levent_pthreads -levent -lmemenv  -lunivalue -ldb_cxx-6.2 -lbitcoin_zmq -lzmq \
 	$(BOOST_LIBS) -o zcash-cli-ok.so
 
