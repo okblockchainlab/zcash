@@ -76,7 +76,7 @@ LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1 -lbitcoin_common 
 
 zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
 	$(CC) -shared -fPIC  -pthread bitcoin-cli-ok.o $(zcash_cli_OBJECTS)  \
-	$(LD_INCLUDES)  -levent \
+	$(LD_INCLUDES)  -levent_pthreads -levent -lmemenv  -lunivalue -ldb_cxx-6.2 -lbitcoin_zmq -lzmq \
 	$(BOOST_LIBS) -o zcash-cli-ok.so
 
 #zcash-cli-ok.so: bitcoin-cli-ok.o 
