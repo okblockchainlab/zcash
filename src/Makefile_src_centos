@@ -31,7 +31,7 @@ zcash_cli_DEPENDENCIES = $(LIBBITCOIN_CLI) $(LIBUNIVALUE) \
 #zcash_cli_OBJECTS = libbitcoin_cli_a-rpcclient.o libbitcoin_util_a-chainparamsbase.o libbitcoin_util_a-clientversion.o \
 #       libbitcoin_util_a-rpcprotocol.o libbitcoin_util_a-util.o libbitcoin_util_a-utilstrencodings.o
 
-zcash_cli_OBJECTS =   libbitcoin_util_a-utiltime.o libbitcoin_util_a-util.o
+zcash_cli_OBJECTS =   libbitcoin_util_a-utiltime.o libbitcoin_util_a-chainparamsbase.o libbitcoin_util_a-util.o
 
 zcash_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
@@ -58,7 +58,9 @@ CFLAGS   = -std=c++11 -fPIC  -fvisibility=hidden -O3 -finline-functions -Wno-inl
 LD_INCLUDES = -L$(srcdir)/secp256k1/.libs -L$(darwindir)/x86_64-unknown-linux-gnu/lib \
 -L$(srcdir)/crypto -L$(srcdir) -L$(srcdir)/snark -L$(srcdir)/leveldb -L$(srcdir)/univalue/.libs
 
-LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1 -lbitcoin_common  -lbitcoin_crypto -lcrypto -lrustzcash
+#LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1 -lbitcoin_common  -lbitcoin_crypto -lbitcoin_util -lcrypto -lrustzcash
+LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1  -lcrypto -lrustzcash
+
 
 #zcash-cli-ok.so: bitcoin-cli-ok.o
 #	$(CC) -m64 -std=c++11  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all \
