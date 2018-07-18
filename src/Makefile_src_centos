@@ -64,7 +64,7 @@ LD_INCLUDES = -L$(srcdir)/secp256k1/.libs -L$(darwindir)/x86_64-unknown-linux-gn
 LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1  -lbitcoin_common  -lbitcoin_crypto -lbitcoin_util  -lcrypto -lrustzcash
 
 
-#zcash-cli-ok.so: bitcoin-cli-ok.o
+zcash-cli-ok.so: bitcoin-cli-ok.o
 	g++ -fPIC -m64 -std=c++11  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all \
     -Werror -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch  \
     -pthread   -Wl,-z,relro -Wl,-z,now -pie  -L/home/zcash/depends/x86_64-unknown-linux-gnu/share/../lib  \
