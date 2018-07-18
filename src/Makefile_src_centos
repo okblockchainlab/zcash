@@ -32,7 +32,8 @@ zcash_cli_DEPENDENCIES = $(LIBBITCOIN_CLI) $(LIBUNIVALUE) \
 #       libbitcoin_util_a-rpcprotocol.o libbitcoin_util_a-util.o libbitcoin_util_a-utilstrencodings.o
 
 zcash_cli_OBJECTS =   libbitcoin_util_a-utiltime.o libbitcoin_util_a-chainparamsbase.o libbitcoin_util_a-util.o \
-    libbitcoin_util_a-utilstrencodings.o libbitcoin_util_a-clientversion.o
+    libbitcoin_util_a-utilstrencodings.o libbitcoin_util_a-clientversion.o \
+    libbitcoin_cli_a-rpcclient.o libbitcoin_util_a-rpcprotocol.o
 
 zcash_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
@@ -88,13 +89,13 @@ zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
 bitcoin-cli-ok.o: bitcoin-cli-ok.cpp
 	$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c bitcoin-cli-ok.cpp -o bitcoin-cli-ok.o
 libbitcoin_cli_a-rpcclient.o:rpcclient.cpp
-	$(CC) $(CFLAGS) -DHAVE_CONFIG_H -I. -I../src/config  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT libbitcoin_cli_a-rpcclient.o -MD -MP -MF .deps/libbitcoin_cli_a-rpcclient.Tpo -c -o libbitcoin_cli_a-rpcclient.o `test -f 'rpcclient.cpp' || echo './'`rpcclient.cpp
+	$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c rpcclient.cpp -o libbitcoin_cli_a-rpcclient.o
 libbitcoin_util_a-chainparamsbase.o:chainparamsbase.cpp
 	$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c chainparamsbase.cpp -o libbitcoin_util_a-chainparamsbase.o
 libbitcoin_util_a-clientversion.o:clientversion.cpp
-		$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c clientversion.cpp -o libbitcoin_util_a-clientversion.o
-    libbitcoin_util_a-rpcprotocol.o:rpcprotocol.cpp
-	$(CC) $(CFLAGS) -DHAVE_CONFIG_H -I. -I../src/config  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -I. -I./obj -pthread -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include -I./leveldb/include -I./leveldb/helpers/memenv -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I/home/zcash/depends/x86_64-unknown-linux-gnu/include   -I./secp256k1/include -I./snark -I./snark/libsnark -I./univalue/include  -I/home/zcash/depends/x86_64-unknown-linux-gnu/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMULTICORE  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror -fPIE -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch -MT libbitcoin_util_a-rpcprotocol.o -MD -MP -MF .deps/libbitcoin_util_a-rpcprotocol.Tpo -c -o libbitcoin_util_a-rpcprotocol.o `test -f 'rpcprotocol.cpp' || echo './'`rpcprotocol.cpp
+	$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c clientversion.cpp -o libbitcoin_util_a-clientversion.o
+libbitcoin_util_a-rpcprotocol.o:rpcprotocol.cpp
+	$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c rpcprotocol.cpp -o libbitcoin_util_a-rpcprotocol.o
 libbitcoin_util_a-util.o:util.cpp
 	$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c util.cpp -o libbitcoin_util_a-util.o
 libbitcoin_util_a-utilstrencodings.o:utilstrencodings.cpp
