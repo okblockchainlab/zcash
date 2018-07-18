@@ -54,7 +54,7 @@ TEST_INCLUDES = -I$(srcdir)/secp256k1/include -I$(darwindir)/x86_64-unknown-linu
 
 CC=g++
 #CFLAGS  = -std=c++11 -pie -fPIE -pipe -O1 -g -fopenmp  -m64  -DHAVE_CONFIG_H -fno-strict-aliasing -Wno-builtin-declaration-mismatch
-CFLAGS   = -std=c++11 -fPIC -fPIE -fvisibility=hidden -O3 -finline-functions -Wno-inline -Wall -pedantic -pthread -m64
+CFLAGS   = -std=c++11 -fPIC  -fvisibility=hidden -O3 -finline-functions -Wno-inline -Wall -pedantic -pthread -m64
 
 LD_INCLUDES = -L$(srcdir)/secp256k1/.libs -L$(darwindir)/x86_64-unknown-linux-gnu/lib \
 -L$(srcdir)/crypto -L$(srcdir) -L$(srcdir)/snark -L$(srcdir)/leveldb -L$(srcdir)/univalue/.libs
@@ -73,7 +73,7 @@ LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1 -lbitcoin_common 
 #    crypto/libbitcoin_crypto.a -lgmp -lgmpxx -lboost_system -lcrypto -lsodium -lrustzcash -ldl -lanl
 
 zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
-	$(CC) -shared -fPIC -pie -pthread bitcoin-cli-ok.o $(zcash_cli_OBJECTS)  \
+	$(CC) -shared -fPIC  -pthread bitcoin-cli-ok.o $(zcash_cli_OBJECTS)  \
 	$(LD_INCLUDES)  -levent \
 	$(BOOST_LIBS) -o zcash-cli-ok.so
 
