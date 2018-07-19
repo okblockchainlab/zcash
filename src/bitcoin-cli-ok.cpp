@@ -19,8 +19,8 @@
 #include "support/events.h"
 
 #include <univalue.h>
-#include "com_okcoin_vault_jni_CZcashj.h"
-#include "com_okcoin_vault_jni_CZcashOk.h"
+//#include "com_okcoin_vault_jni_CZcashj.h"
+#include "com_okcoin_vault_jni_zcash_CZcashOk.h"
 
 
 #define LOG(format, ...) printf(format, ##__VA_ARGS__)
@@ -543,11 +543,11 @@ JNIEXPORT jbyteArray JNICALL Java_com_okcoin_vault_jni_CZcashj_signTransaction
 }
 
 /*
- * Class:     com_okcoin_vault_jni_CZcashOk
+ * Class:     com_okcoin_vault_jni_zcash_CZcashOk
  * Method:    execute
  * Signature: (Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;
  */
-JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_CZcashOk_execute
+JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
         (JNIEnv *env, jclass ob, jstring netType, jstring params)
 {
 
