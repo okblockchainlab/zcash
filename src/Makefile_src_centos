@@ -84,7 +84,7 @@ zcash-cli-ok.so: bitcoin-cli-ok_test.o
 	$(CC)  -shared -fPIC -m64 bitcoin-cli-ok_test.o -o zcash-cli-ok.so
 
 bitcoin-cli-ok_test.o: bitcoin-cli-ok_test.cpp
-	$(CC) -std=c++11 -fPIC -m64 -c bitcoin-cli-ok_test.cpp -o bitcoin-cli-ok_test.o
+	$(CC) -std=c++11 -fPIC -m64 $(TEST_INCLUDES) -c bitcoin-cli-ok_test.cpp -o bitcoin-cli-ok_test.o
 bitcoin-cli-ok.o: bitcoin-cli-ok.cpp
 	$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c bitcoin-cli-ok.cpp -o bitcoin-cli-ok.o
 libbitcoin_cli_a-rpcclient.o:rpcclient.cpp
