@@ -14,18 +14,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
     const char*  netTypes = env->GetStringUTFChars(netType, 0);
     const char*  strParams = env->GetStringUTFChars(params, 0);
     
-    /*if (ret.isStr()){
-    tmpStr= ret.get_str();
 
-    jstring mystring=env->NewStringUTF(tmpStr.c_str());
-    env->SetObjectArrayElement(mjobjectArray,
-                               0,(jobject)mystring);
-}
-else if (ret.isObject()){*/
-    std::list<std::string> kvList;
-    std::string context;
-    ret.feedStringList(kvList, context);
-    int len = kvList.size();
 
     jclass cls = env->FindClass("java/lang/Object");
     jobjectArray mjobjectArray = (jobjectArray)env->NewObjectArray(1, cls, NULL);
