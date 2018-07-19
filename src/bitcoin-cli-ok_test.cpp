@@ -13,7 +13,7 @@
  * Method:    execute
  * Signature: (Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;
  */
-JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_CZcashOk_execute
+JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
         (JNIEnv *env, jclass ob, jstring netType, jstring params)
 {
 
