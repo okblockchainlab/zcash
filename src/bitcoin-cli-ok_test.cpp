@@ -6,7 +6,7 @@
 
 #include "com_okcoin_vault_jni_zcash_CZcashOk.h"
 
-#include <stdio>
+#include <stdio.h>
 #include <string>
 /*
  * Class:     com_okcoin_vault_jni_CZcashOk
