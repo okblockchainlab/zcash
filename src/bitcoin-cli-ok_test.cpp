@@ -13,10 +13,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
 
     const char*  netTypes = env->GetStringUTFChars(netType, 0);
     const char*  strParams = env->GetStringUTFChars(params, 0);
-
-
-
-    s
+    
     /*if (ret.isStr()){
     tmpStr= ret.get_str();
 
