@@ -73,7 +73,7 @@ zcash-cli-ok.so: bitcoin-cli-ok.o
     -lboost_program_options -lboost_thread -lboost_chrono -pthread -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib \
     -lssl -lcrypto -ldl   -pthread -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -lcrypto -ldl   \
     -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -levent   libzcash.a snark/libsnark.a \
-     -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib libsodium.la
+    -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib libsodium.la \
     crypto/libbitcoin_crypto.a -lgmp -lgmpxx -lboost_system -lcrypto  -lrustzcash -ldl -lanl
 
 #zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
