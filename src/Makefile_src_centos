@@ -64,27 +64,27 @@ LD_INCLUDES = -L$(srcdir)/secp256k1/.libs -L$(darwindir)/x86_64-unknown-linux-gn
 LD_INCLUDES_ADDR = -lsnark -lgmp -lzcash -lsodium  -lsecp256k1  -lbitcoin_common  -lbitcoin_crypto -lbitcoin_util  -lcrypto -lrustzcash
 
 
-#zcash-cli-ok.so: bitcoin-cli-ok.o
-#	g++ -shared -fPIC -m64 -std=c++11  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all \
-#   -Werror -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch  \
-#    -pthread   -Wl,-z,relro -Wl,-z,now -pie  -L/home/zcash/depends/x86_64-unknown-linux-gnu/share/../lib  \
-#    -o zcash-cli-ok.so bitcoin-cli-ok.o  libbitcoin_cli.a univalue/.libs/libunivalue.a libbitcoin_util.a \
-#    -L/home/zcash/depends/x86_64-unknown-linux-gnu/share/../lib -lboost_system -lboost_filesystem \
-#    -lboost_program_options -lboost_thread -lboost_chrono -pthread -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib \
-#    -lssl -lcrypto -ldl   -pthread -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -lcrypto -ldl   \
-#    -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -levent   libzcash.a snark/libsnark.a \
-#    crypto/libbitcoin_crypto.a -lgmp -lgmpxx -lboost_system -lcrypto -lsodium -lrustzcash -ldl -lanl
+zcash-cli-ok.so: bitcoin-cli-ok.o
+	g++ -shared -fPIC -m64 -std=c++11  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all \
+   -Werror -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch  \
+    -pthread   -Wl,-z,relro -Wl,-z,now -pie  -L/home/zcash/depends/x86_64-unknown-linux-gnu/share/../lib  \
+    -o zcash-cli-ok.so bitcoin-cli-ok.o  libbitcoin_cli.a univalue/.libs/libunivalue.a libbitcoin_util.a \
+     -L/home/zcash/depends/x86_64-unknown-linux-gnu/share/../lib -lboost_system -lboost_filesystem \
+    -lboost_program_options -lboost_thread -lboost_chrono -pthread -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib \
+    -lssl -lcrypto -ldl   -pthread -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -lcrypto -ldl   \
+    -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -levent   libzcash.a snark/libsnark.a \
+    crypto/libbitcoin_crypto.a -lgmp -lgmpxx -lboost_system -lcrypto -lsodium -lrustzcash -ldl -lanl
 
 #zcash-cli-ok.so: bitcoin-cli-ok.o $(zcash_cli_OBJECTS)
 #	$(CC) -shared -fPIC  -pthread bitcoin-cli-ok.o $(zcash_cli_OBJECTS) $(zcash_cli_LDADD) \
 #	$(LD_INCLUDES)  -levent_pthreads -levent -lmemenv  -lunivalue -ldb_cxx-6.2 -lbitcoin_zmq -lzmq \
 #	$(BOOST_LIBS) -o zcash-cli-ok.so
 
-zcash-cli-ok.so: bitcoin-cli-ok_test.o
-	$(CC)  -shared -fPIC -m64  -pie bitcoin-cli-ok_test.o -o zcash-cli-ok.so
+#zcash-cli-ok.so: bitcoin-cli-ok_test.o
+#	$(CC)  -shared -fPIC -m64  bitcoin-cli-ok_test.o -o zcash-cli-ok.so
 
 bitcoin-cli-ok_test.o: bitcoin-cli-ok_test.cpp
-	$(CC) -std=c++11 -fPIC -fPIE -m64  -nostartfiles $(TEST_INCLUDES) -c bitcoin-cli-ok_test.cpp -o bitcoin-cli-ok_test.o
+	$(CC) -std=c++11 -fPIC -m64   $(TEST_INCLUDES) -c bitcoin-cli-ok_test.cpp -o bitcoin-cli-ok_test.o
 bitcoin-cli-ok.o: bitcoin-cli-ok.cpp
 	$(CC) $(CFLAGS) $(TEST_INCLUDES) -DHAVE_CONFIG_H -c bitcoin-cli-ok.cpp -o bitcoin-cli-ok.o
 libbitcoin_cli_a-rpcclient.o:rpcclient.cpp
