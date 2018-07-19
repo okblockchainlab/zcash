@@ -11,4 +11,6 @@ cp -f ./src/libsodium/.libs/libsodium.a ../../depends/x86_64-unknown-linux-gnu/l
 
 #3
 cd ../../src
+rm -f zcash-cli-ok.so
+rm -f bitcoin-cli-ok.o
 make -f Makefile_src_centos
