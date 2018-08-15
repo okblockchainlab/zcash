@@ -1,7 +1,16 @@
-CC  = clang++
-srcdir = /Users/wangwenfeng01/git/wallet/zcash/src
-darwindir = /Users/wangwenfeng01/git/wallet/zcash/depends
-osUserdir = /Users/wangwenfeng01/git/wallet/zcash/depends/x86_64-apple-darwin17.5.0
+:wqCC  = clang++
+#srcdir = /Users/wangwenfeng01/git/wallet/zcash/src
+#darwindir = /Users/wangwenfeng01/git/wallet/zcash/depends
+#osUserdir = /Users/wangwenfeng01/git/wallet/zcash/depends/x86_64-apple-darwin17.5.0
+
+makepath :=$(shell pwd)/$(lastword $(MAKEFILE_LIST))
+basepathp :=$(shell dirname $(makepath))
+basepath=$(shell dirname $(basepathp))
+
+srcdir=$(basepath)/src
+#$(warning $(srcdir))
+darwindir=$(basepath)/depends
+osUserdir=$(basepath)/depends/x86_64-apple-darwin17.5.0
 
 LIBBITCOIN_CLI = libbitcoin_cli.a
 LIBUNIVALUE = univalue/.libs/libunivalue.a
