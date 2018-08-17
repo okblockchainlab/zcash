@@ -1,5 +1,5 @@
 #1
-./build.sh
+./build_ok_centos_in.sh
 
 #2
 wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
