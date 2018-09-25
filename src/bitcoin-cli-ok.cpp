@@ -575,6 +575,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
     ret.feedStringList(kvList, context);
     int len = kvList.size();
 */
+   int len = 0;
     jclass cls = env->FindClass("java/lang/Object");
     jobjectArray mjobjectArray = (jobjectArray)env->NewObjectArray(len, cls, NULL);
 /*
