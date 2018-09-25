@@ -5,10 +5,11 @@
 
 #include "chainparamsbase.h"
 #include "clientversion.h"
-#include "rpcclient.h"
+//#include "rpcclient.h"
 #include "rpcprotocol.h"
 #include "util.h"
 #include "utilstrencodings.h"
+#include "rpcserver.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -253,6 +254,7 @@ UniValue CallRPC(const std::string& strMethod, const UniValue& params)
 }
 
 
+CRPCTable rpcTalbe;
 
 UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 {
@@ -260,13 +262,14 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
     UniValue result = NullUniValue;
     int nRet = 0;
     try {
-        UniValue params = RPCConvertValues(strMethod, args);
+        UniValue params ;//= RPCConvertValues(strMethod, args);
 
         // Execute and handle connection failures with -rpcwait
         const bool fWait = false;
         do {
             try {
-                const UniValue reply= CallRPC(strMethod, params);
+                const UniValue reply = rpcTalbe.execute(strMethod, params);
+                //rpcTalbe[strMethod]
                 // Parse reply
                 result = find_value(reply, "result");
                 const UniValue& error  = find_value(reply, "error");
@@ -339,7 +342,7 @@ void Test_rpc()
     params_formt.push_back("param2");
     params_formt.push_back("param3");
 
-    UniValue params = RPCConvertValues(strMethod, params_formt);
+    UniValue params ;//= RPCConvertValues(strMethod, params_formt);
 
     try {
         const UniValue reply = CallRPC(strMethod, params);
@@ -602,7 +605,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
 
 //test for main
 
-int main(int argc, char* argv[])
+int main1(int argc, char* argv[])
 {
 
 
