@@ -9,7 +9,7 @@
 #include "rpcprotocol.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "rpcserver.h"
+//#include "rpcserver.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -253,7 +253,7 @@ UniValue CallRPC(const std::string& strMethod, const UniValue& params)
 }
 
 
-CRPCTable rpcTalbe;
+//CRPCTable rpcTalbe;
 
 UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 {
@@ -267,7 +267,7 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         const bool fWait = false;
         do {
             try {
-                const UniValue reply = rpcTalbe.execute(strMethod, params);
+                const UniValue reply ;//= rpcTalbe.execute(strMethod, params);
                 //rpcTalbe[strMethod]
                 // Parse reply
                 result = find_value(reply, "result");
