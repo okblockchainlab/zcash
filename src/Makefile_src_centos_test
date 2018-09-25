@@ -1,6 +1,6 @@
 makepath :=$(shell pwd)/$(lastword $(MAKEFILE_LIST))
 basepathp :=$(shell dirname $(makepath))
-basepath=$(shell dirname $(basepathp))make
+basepath=$(shell dirname $(basepathp))
 
 srcdir=$(basepath)/src
 #$(warning $(srcdir))
