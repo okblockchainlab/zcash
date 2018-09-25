@@ -20,7 +20,6 @@
 #include "support/events.h"
 
 #include <univalue.h>
-//#include "com_okcoin_vault_jni_CZcashj.h"
 #include "com_okcoin_vault_jni_zcash_CZcashOk.h"
 
 
