@@ -605,7 +605,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
 
 //test for main
 
-int main1(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 
 
