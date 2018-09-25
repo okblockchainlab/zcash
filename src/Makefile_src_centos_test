@@ -7,7 +7,7 @@ srcdir=$(basepath)/src
 darwindir=$(basepath)/depends
 
 CC=g++
-CFLAGS   = -std=c++11 -fPIC  -fvisibility=hidden -O3 -finline-functions -Wno-inline -Wall -pthread -m64
+CFLAGS   = -std=c++11
 
 TEST_INCLUDES = -I$(srcdir)/secp256k1/include -I$(darwindir)/x86_64-unknown-linux-gnu/include \
 -I$(srcdir) -I$(srcdir)/config -I$(srcdir)/univalue/include  -I$(srcdir)/leveldb/include  -I$(srcdir)/zcash -I/root/jdk1.8.0_171/include -I/root/jdk1.8.0_171/include/linux
