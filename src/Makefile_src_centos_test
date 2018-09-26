@@ -12,9 +12,9 @@ CFLAGS   = -std=c++11  -fPIC -fvisibility=hidden -O3 -finline-functions -Wno-inl
 TEST_INCLUDES = -I$(srcdir)/secp256k1/include -I$(darwindir)/x86_64-unknown-linux-gnu/include \
 -I$(srcdir) -I$(srcdir)/config -I$(srcdir)/univalue/include  -I$(srcdir)/leveldb/include  -I$(srcdir)/zcash -I/root/jdk1.8.0_171/include -I/root/jdk1.8.0_171/include/linux
 
-rm -f libzcash.a
-rm -f bitcoin-cli-ok.o
-rm -f zcash-cli-ok.so
+$(shell rm -f libzcash.a)
+$(shell rm -f bitcoin-cli-ok.o)
+$(shell rm -f zcash-cli-ok.so)
 
 zcash-cli-ok.so: bitcoin-cli-ok.o  libbitcoin_server.a libbitcoin_common.a univalue/.libs/libunivalue.a libbitcoin_util.a crypto/libbitcoin_crypto.a libzcash.a snark/libsnark.a ./leveldb/libleveldb.a ./leveldb/libmemenv.a secp256k1/.libs/libsecp256k1.a libbitcoin_zmq.a  libbitcoin_wallet.a       crypto/libbitcoin_crypto.a
 	g++ -shared -fPIC  -m64 -std=c++11  -Wformat -Wformat-security -Wstack-protector -fstack-protector-all -Werror  -pipe -O1 -g -fopenmp -fwrapv -fno-strict-aliasing -Wno-builtin-declaration-mismatch  -pthread   -Wl,-z,relro -Wl,-z,now  -L/home/zcash/depends/x86_64-unknown-linux-gnu/share/../lib  -o  zcash-cli-ok.so bitcoin-cli-ok.o  libbitcoin_server.a libbitcoin_common.a univalue/.libs/libunivalue.a libbitcoin_util.a crypto/libbitcoin_crypto.a libzcash.a snark/libsnark.a ./leveldb/libleveldb.a ./leveldb/libmemenv.a secp256k1/.libs/libsecp256k1.a libbitcoin_zmq.a -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -lzmq -lstdc++   libbitcoin_wallet.a -L/home/zcash/depends/x86_64-unknown-linux-gnu/share/../lib -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lboost_chrono -ldb_cxx-6.2 -pthread -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -lssl -lcrypto -ldl   -pthread -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -lcrypto -ldl   -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -levent_pthreads -levent   -L/home/zcash/depends/x86_64-unknown-linux-gnu/lib -levent   crypto/libbitcoin_crypto.a -lgmp -lgmpxx -lboost_system -lcrypto -lsodium -lrustzcash -ldl  -lanl
