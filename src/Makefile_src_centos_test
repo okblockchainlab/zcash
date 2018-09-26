@@ -6,7 +6,7 @@ srcdir=$(basepath)/src
 #$(warning $(srcdir))
 darwindir=$(basepath)/depends
 
-CC=g++bit
+CC=g++
 CFLAGS   = -std=c++11 -fPIC  -fvisibility=hidden -O3 -finline-functions -Wno-inline -Wall -pthread -m64
 
 TEST_INCLUDES = -I$(srcdir)/secp256k1/include -I$(darwindir)/x86_64-unknown-linux-gnu/include \
