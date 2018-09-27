@@ -267,10 +267,11 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         const bool fWait = false;
         do {
             try {
-                printf("ssss");
+                print("before prcTalbe");
                 LogPrint("test", "before prcTalbe");
                 const UniValue reply = rpcTalbe.execute(strMethod, params);
                 LogPrint("test", "end prcTalbe");
+                print("end prcTalbe");
                 //rpcTalbe[strMethod]
                 // Parse reply
                 result = find_value(reply, "result");
