@@ -3,7 +3,7 @@
 
 #2
 wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
-tar xzvf LATEST.tar.gz
+tar -xzvf LATEST.tar.gz
 cd libsodium-stable
 ./configure --disable-pie
 make
