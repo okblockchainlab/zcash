@@ -267,6 +267,7 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         const bool fWait = false;
         do {
             try {
+                printf("ssss");
                 LogPrint("test", "before prcTalbe");
                 const UniValue reply = rpcTalbe.execute(strMethod, params);
                 LogPrint("test", "end prcTalbe");
