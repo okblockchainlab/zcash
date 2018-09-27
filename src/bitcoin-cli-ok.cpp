@@ -261,7 +261,7 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
     UniValue result = NullUniValue;
     int nRet = 0;
     try {
-        UniValue params ;//= RPCConvertValues(strMethod, args);
+        UniValue params = RPCConvertValues(strMethod, args);
 
         // Execute and handle connection failures with -rpcwait
         const bool fWait = false;
