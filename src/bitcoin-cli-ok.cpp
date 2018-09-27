@@ -254,7 +254,6 @@ UniValue CallRPC(const std::string& strMethod, const UniValue& params)
 
 
 CRPCTable rpcTalbe;
-fPrintToConsole = true;
 
 UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 {
