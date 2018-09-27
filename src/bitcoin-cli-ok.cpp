@@ -259,12 +259,13 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 {
     printf("enter CommandLineRPC \n\n");
     std::string strPrint;
-    UniValue result = NullUniValue;
-
+    UniValue result;
+    printf("enter CommandLineRPC1 \n\n");
     int nRet = 0;
     try {
+        printf("enter CommandLineRPC2 \n\n");
         UniValue params = RPCConvertValues(strMethod, args);
-
+        printf("enter CommandLineRPC3 \n\n");
         // Execute and handle connection failures with -rpcwait
         const bool fWait = false;
         do {
