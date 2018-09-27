@@ -389,7 +389,7 @@ bool g_AppInitRPC = false;
 UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &params_formt){
 
     UniValue result("");
-    try {
+   /* try {
         if (!g_AppInitRPC)
         {
             SelectBaseParams(CBaseChainParams::TESTNET);
@@ -406,7 +406,7 @@ UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &para
     } catch (...) {
         PrintExceptionContinue(NULL, "AppInitRPC()");
         return result;
-    }
+    }*/
 
     try {
         result = CommandLineRPC(strMethod, params_formt);
