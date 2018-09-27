@@ -254,6 +254,7 @@ UniValue CallRPC(const std::string& strMethod, const UniValue& params)
 
 
 CRPCTable rpcTalbe;
+fPrintToConsole = true;
 
 UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 {
@@ -267,7 +268,9 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         const bool fWait = false;
         do {
             try {
+                LogPrint("test", "before prcTalbe");
                 const UniValue reply = rpcTalbe.execute(strMethod, params);
+                LogPrint("test", "end prcTalbe");
                 //rpcTalbe[strMethod]
                 // Parse reply
                 result = find_value(reply, "result");
