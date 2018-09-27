@@ -567,18 +567,17 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
         printf("%d:%s \n", i, vArgs[i].c_str());
     }
 
-   /* std::vector<std::string> paramEn  = std::vector<std::string>(vArgs.begin()+1, vArgs.end());
+    std::vector<std::string> paramEn  = std::vector<std::string>(vArgs.begin()+1, vArgs.end());
     UniValue ret = EXEMethod(strMethod, paramEn);
 
     std::list<std::string> kvList;
     std::string context;
     ret.feedStringList(kvList, context);
     int len = kvList.size();
-*/
-   int len = 0;
+
     jclass cls = env->FindClass("java/lang/Object");
     jobjectArray mjobjectArray = (jobjectArray)env->NewObjectArray(len, cls, NULL);
-/*
+
     int i=0;
     for(std::list<std::string>::iterator it = kvList.begin(); it != kvList.end(); it++, i++){
         jstring mystring=env->NewStringUTF((*it).c_str());
@@ -586,7 +585,6 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
                                    i,(jobject)mystring);
     }
 
-*/
     return mjobjectArray;
 
 }
