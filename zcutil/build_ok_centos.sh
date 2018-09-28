@@ -2,7 +2,7 @@
 #./build_ok_centos_in.sh
 
 #2
-sodiumPath="./libsodium-stable"
+sodiumPath="libsodium-stable"
 if [ ! -x "$sodiumPath" ]; then
     wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
     tar -xzvf LATEST.tar.gz
