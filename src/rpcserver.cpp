@@ -567,22 +567,28 @@ std::string JSONRPCExecBatch(const UniValue& vReq)
 
 UniValue CRPCTable::execute(const std::string &strMethod, const UniValue &params) const
 {
+
     // Return immediately if in warmup
     {
+        printf("enter cprcTable execute \n");
         LOCK(cs_rpcWarmup);
+        printf("enter cprcTable execute locke \n");
         if (fRPCInWarmup)
             throw JSONRPCError(RPC_IN_WARMUP, rpcWarmupStatus);
     }
 
+    printf("enter cprcTable execute find method \n");
     // Find method
     const CRPCCommand *pcmd = tableRPC[strMethod];
     if (!pcmd)
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found");
 
+    printf("enter cprcTable execute find method 2 \n");
     g_rpcSignals.PreCommand(*pcmd);
-
+    printf("enter cprcTable execute find method 3 \n");
     try
     {
+        printf("enter cprcTable execute find method 4 \n");
         // Execute
         return pcmd->actor(params, false);
     }
