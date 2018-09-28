@@ -2,7 +2,7 @@
 #./build_ok_centos_in.sh
 
 #2
-sodiumPath="libsodium-stable/"
+sodiumPath="libsodium-stable"
 if [ ! -d "$sodiumPath" ]; then
     wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
     tar -xzvf LATEST.tar.gz
@@ -14,7 +14,7 @@ if [ ! -d "$sodiumPath" ]; then
 fi
 
 #3
-gmpPath="/home/zcash/zcutil/gmp-6.1.1/"
+gmpPath="gmp-6.1.1"
 if [ ! -d "$gmpPath" ]; then
     wget https://gmplib.org/download/gmp/gmp-6.1.1.tar.bz2
     tar -jxvf gmp-6.1.1.tar.bz2
@@ -22,9 +22,9 @@ if [ ! -d "$gmpPath" ]; then
     ./configure --with-pic
     make
     cp -f ./.libs/libgmp.a ../../depends/x86_64-unknown-linux-gnu/lib/libgmp.a
-
+    cd ..
 fi
 
 #4
-cd ../../src
+cd ../src
 make -f Makefile_src_centos
