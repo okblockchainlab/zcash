@@ -1,5 +1,5 @@
 #1
-#./build_ok_centos_in.sh
+./build_ok_centos_in.sh
 
 #2
 sodiumPath="libsodium-stable"
