@@ -263,15 +263,9 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
     int nRet = 0;
     try {
         UniValue params = RPCConvertValues(strMethod, args);
-        printf("enter CommandLineRPC3 \n\n");
-        // Execute and handle connection failures with -rpcwait
-        const bool fWait = false;
 
-
-        printf("before prcTalbe");
-        LogPrint("test", "before prcTalbe");
+        printf("before prcTalbe \n");
         const UniValue reply = rpcTalbe.execute(strMethod, params);
-        LogPrint("test", "end prcTalbe");
         printf("end prcTalbe");
         //rpcTalbe[strMethod]
         // Parse reply
