@@ -2,7 +2,7 @@
 #./build_ok_centos_in.sh
 
 #2
-sodiumPath="libsodium-stable"
+sodiumPath="/home/zcash/zcutil/libsodium-stable"
 if [ ! -x "$sodiumPath" ]; then
     wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
     tar -xzvf LATEST.tar.gz
@@ -14,7 +14,7 @@ if [ ! -x "$sodiumPath" ]; then
 fi
 
 #3
-gmpPath="./gmp-6.1.1"
+gmpPath="/home/zcash/zcutil/gmp-6.1.1"
 if [ ! "$gmpPath" ]; then
     wget https://gmplib.org/download/gmp/gmp-6.1.1.tar.bz2
     tar -jxvf gmp-6.1.1.tar.bz2
