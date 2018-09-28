@@ -116,9 +116,10 @@ string AccountFromValue(const UniValue& value)
 
 UniValue getnewaddress(const UniValue& params, bool fHelp)
 {
+    printf("enter getnewaddress");
     if (!EnsureWalletIsAvailable(fHelp))
         return NullUniValue;
-
+    printf("enter getnewaddress1");
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getnewaddress ( \"account\" )\n"
@@ -131,25 +132,25 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
             + HelpExampleCli("getnewaddress", "")
             + HelpExampleRpc("getnewaddress", "")
         );
-
+    printf("enter getnewaddress2");
     LOCK2(cs_main, pwalletMain->cs_wallet);
-
+    printf("enter getnewaddress3");
     // Parse the account first so we don't generate a key if there's an error
     string strAccount;
     if (params.size() > 0)
         strAccount = AccountFromValue(params[0]);
-
+    printf("enter getnewaddress4");
     if (!pwalletMain->IsLocked())
         pwalletMain->TopUpKeyPool();
-
+    printf("enter getnewaddress5");
     // Generate a new key that is added to wallet
     CPubKey newKey;
     if (!pwalletMain->GetKeyFromPool(newKey))
         throw JSONRPCError(RPC_WALLET_KEYPOOL_RAN_OUT, "Error: Keypool ran out, please call keypoolrefill first");
     CKeyID keyID = newKey.GetID();
-
+    printf("enter getnewaddress6");
     pwalletMain->SetAddressBook(keyID, strAccount, "receive");
-
+    printf("enter getnewaddress7");
     return EncodeDestination(keyID);
 }
 

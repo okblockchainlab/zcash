@@ -353,7 +353,7 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "getaccount",             &getaccount,             true  },
     { "wallet",             "getaddressesbyaccount",  &getaddressesbyaccount,  true  },
     { "wallet",             "getbalance",             &getbalance,             false },
-    { "wallet",             "getnewaddress",          &getnewaddress,          true  },
+    { "wallet",             "getnewaddress",          &getnewagetnewaddressddress,          true  },
     { "wallet",             "getrawchangeaddress",    &getrawchangeaddress,    true  },
     { "wallet",             "getreceivedbyaccount",   &getreceivedbyaccount,   false },
     { "wallet",             "getreceivedbyaddress",   &getreceivedbyaddress,   false },
@@ -570,23 +570,18 @@ UniValue CRPCTable::execute(const std::string &strMethod, const UniValue &params
 
     // Return immediately if in warmup
     {
-        printf("enter cprcTable execute \n");
         LOCK(cs_rpcWarmup);
-        printf("enter cprcTable execute locke \n");
         //del by wwf 2018.9.28;  use for shared .so
         //if (fRPCInWarmup)
         //    throw JSONRPCError(RPC_IN_WARMUP, rpcWarmupStatus);
     }
 
-    printf("enter cprcTable execute find method \n");
     // Find method
     const CRPCCommand *pcmd = tableRPC[strMethod];
     if (!pcmd)
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found");
 
-    printf("enter cprcTable execute find method 2 \n");
     g_rpcSignals.PreCommand(*pcmd);
-    printf("enter cprcTable execute find method 3 \n");
     try
     {
         printf("enter cprcTable execute find method 4 \n");
