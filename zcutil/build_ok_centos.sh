@@ -3,7 +3,7 @@
 
 #2
 sodiumPath="/home/zcash/zcutil/libsodium-stable/"
-if [ ! -x "$sodiumPath" ]; then
+if [ ! -d "$sodiumPath" ]; then
     wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
     tar -xzvf LATEST.tar.gz
     cd libsodium-stable
@@ -15,7 +15,7 @@ fi
 
 #3
 gmpPath="/home/zcash/zcutil/gmp-6.1.1/"
-if [ ! "$gmpPath" ]; then
+if [ ! -d "$gmpPath" ]; then
     wget https://gmplib.org/download/gmp/gmp-6.1.1.tar.bz2
     tar -jxvf gmp-6.1.1.tar.bz2
     cd gmp-6.1.1
