@@ -275,8 +275,6 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         if (!error.isNull()) {
             // Error
             int code = error["code"].get_int();
-            if (fWait && code == RPC_IN_WARMUP)
-                throw CConnectionFailed("server in warmup");
             strPrint = "error: " + error.write();
             nRet = abs(code);
             if (error.isObject())
