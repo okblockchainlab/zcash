@@ -260,65 +260,53 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
     printf("enter CommandLineRPC \n\n");
     std::string strPrint;
     UniValue result;
-    printf("enter CommandLineRPC1 \n\n");
     int nRet = 0;
     try {
-        printf("enter CommandLineRPC2 \n\n");
         UniValue params = RPCConvertValues(strMethod, args);
         printf("enter CommandLineRPC3 \n\n");
         // Execute and handle connection failures with -rpcwait
         const bool fWait = false;
-        do {
-            try {
-                printf("before prcTalbe");
-                LogPrint("test", "before prcTalbe");
-                const UniValue reply = rpcTalbe.execute(strMethod, params);
-                LogPrint("test", "end prcTalbe");
-                printf("end prcTalbe");
-                //rpcTalbe[strMethod]
-                // Parse reply
-                result = find_value(reply, "result");
-                const UniValue& error  = find_value(reply, "error");
-
-                if (!error.isNull()) {
-                    // Error
-                    int code = error["code"].get_int();
-                    if (fWait && code == RPC_IN_WARMUP)
-                        throw CConnectionFailed("server in warmup");
-                    strPrint = "error: " + error.write();
-                    nRet = abs(code);
-                    if (error.isObject())
-                    {
-                        UniValue errCode = find_value(error, "code");
-                        UniValue errMsg  = find_value(error, "message");
-                        strPrint = errCode.isNull() ? "" : "error code: "+errCode.getValStr()+"\n";
-
-                        if (errMsg.isStr())
-                            strPrint += "error message:\n"+errMsg.get_str();
-                    }
-                } else {
-                    // Result
-                    if (result.isNull())
-                        strPrint = "";
-                    else if (result.isStr()) {
 
 
-                        strPrint = result.get_str();
-                        printf("result.isStr %s \n", strPrint.c_str());
-                    }
-                    else
-                        strPrint = result.write(2);
-                }
-                // Connection succeeded, no need to retry.
-                break;
+        printf("before prcTalbe");
+        LogPrint("test", "before prcTalbe");
+        const UniValue reply = rpcTalbe.execute(strMethod, params);
+        LogPrint("test", "end prcTalbe");
+        printf("end prcTalbe");
+        //rpcTalbe[strMethod]
+        // Parse reply
+        result = find_value(reply, "result");
+        const UniValue& error  = find_value(reply, "error");
+
+        if (!error.isNull()) {
+            // Error
+            int code = error["code"].get_int();
+            if (fWait && code == RPC_IN_WARMUP)
+                throw CConnectionFailed("server in warmup");
+            strPrint = "error: " + error.write();
+            nRet = abs(code);
+            if (error.isObject())
+            {
+                UniValue errCode = find_value(error, "code");
+                UniValue errMsg  = find_value(error, "message");
+                strPrint = errCode.isNull() ? "" : "error code: "+errCode.getValStr()+"\n";
+
+                if (errMsg.isStr())
+                    strPrint += "error message:\n"+errMsg.get_str();
             }
-            catch (const CConnectionFailed&) {
-                if (fWait)
-                    MilliSleep(1000);
-                else
-                    throw;
+        } else {
+            // Result
+            if (result.isNull())
+                strPrint = "";
+            else if (result.isStr()) {
+
+
+                strPrint = result.get_str();
+                printf("result.isStr %s \n", strPrint.c_str());
             }
-        } while (fWait);
+            else
+                strPrint = result.write(2);
+        }
     }
     catch (const boost::thread_interrupted&) {
         throw;
