@@ -573,8 +573,9 @@ UniValue CRPCTable::execute(const std::string &strMethod, const UniValue &params
         printf("enter cprcTable execute \n");
         LOCK(cs_rpcWarmup);
         printf("enter cprcTable execute locke \n");
-        if (fRPCInWarmup)
-            throw JSONRPCError(RPC_IN_WARMUP, rpcWarmupStatus);
+        //del by wwf 2018.9.28;  use for shared .so
+        //if (fRPCInWarmup)
+        //    throw JSONRPCError(RPC_IN_WARMUP, rpcWarmupStatus);
     }
 
     printf("enter cprcTable execute find method \n");
