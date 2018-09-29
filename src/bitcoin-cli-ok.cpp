@@ -151,7 +151,7 @@ bool AppInit(int argc, char* argv[])
             fprintf(stdout, "Zcash server starting\n");
 
             // Daemonize
-            pid_t pid = fork();
+            //pid_t pid = fork();
             if (pid < 0)
             {
                 fprintf(stderr, "Error: fork() returned %d errno %d\n", pid, errno);
@@ -178,7 +178,7 @@ bool AppInit(int argc, char* argv[])
         PrintExceptionContinue(NULL, "AppInit()");
     }
 
-    if (!fRet)
+    /*if (!fRet)
     {
         Interrupt(threadGroup);
         // threadGroup.join_all(); was left out intentionally here, because we didn't re-test all of
@@ -188,6 +188,7 @@ bool AppInit(int argc, char* argv[])
         WaitForShutdown(&threadGroup);
     }
     Shutdown();
+     */
 
     return fRet;
 }
