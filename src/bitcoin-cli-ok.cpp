@@ -207,7 +207,16 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 
         const UniValue reply = tableRPC.execute(strMethod, params);
         // Parse reply
-        result = find_value(reply, "result");
+        if (reply.isStr())
+        {
+            printf("CommandLineRPC reply isStr func:%s", strMethod.c_str());
+            result = reply;
+        }
+        else{
+            printf("CommandLineRPC reply  func:%s", strMethod.c_str());
+            result = find_value(reply, "result");
+        }
+
         const UniValue& error  = find_value(reply, "error");
         printf("CommandLineRPC find error end\n");
 
@@ -343,12 +352,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
     std::vector<std::string> paramEn  = std::vector<std::string>(vArgs.begin()+1, vArgs.end());
     UniValue ret = EXEMethod(strMethod, paramEn);
 
-    printf("Java_com_okcoin_vault_jni_zcash_CZcashOk_execute EXEMethod end %s \n", ret.getValStr().c_str());
-
-    std::vector<std::string> keys = ret.getKeys();
-    for (int i=0; i<keys.size(); i++){
-        printf("ret keys:%d:%s \n", i, keys[i].c_str());
-    }
+    printf("Java_com_okcoin_vault_jni_zcash_CZcashOk_execute EXEMethod end  \n");
 
     std::list<std::string> kvList;
     std::string context;
@@ -365,6 +369,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
                                    i,(jobject)mystring);
     }
 
+    printf("Java_com_okcoin_vault_jni_zcash_CZcashOk_execute  end kvSize:%d \n", kvList.size());
     return mjobjectArray;
 
 }
