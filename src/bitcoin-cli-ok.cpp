@@ -151,7 +151,7 @@ bool AppInit(int argc, char* argv[])
             fprintf(stdout, "Zcash server starting\n");
 
             // Daemonize
-           /* pid_t pid = fork();
+            pid_t pid = fork();
             if (pid < 0)
             {
                 fprintf(stderr, "Error: fork() returned %d errno %d\n", pid, errno);
@@ -166,7 +166,7 @@ bool AppInit(int argc, char* argv[])
             pid_t sid = setsid();
             if (sid < 0)
                 fprintf(stderr, "Error: setsid() returned %d errno %d\n", sid, errno);
-                */
+
         }
 #endif
         SoftSetBoolArg("-server", false);
