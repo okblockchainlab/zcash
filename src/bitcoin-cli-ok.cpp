@@ -190,6 +190,8 @@ bool AppInit(int argc, char* argv[])
     return fRet;
 }
 
+
+CRPCTable rpcTalbe;
 UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 {
     printf("enter CommandLineRPC \n\n");
@@ -271,6 +273,9 @@ UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &para
 
             // Connect bitcoind signal handlers
             noui_connect();
+
+            int argc = 0;
+            char* argv[] = {};
 
             bool bRet = AppInit(argc, argv);
             if(EXIT_FAILURE == bRet){
