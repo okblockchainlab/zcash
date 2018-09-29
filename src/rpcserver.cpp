@@ -587,7 +587,10 @@ UniValue CRPCTable::execute(const std::string &strMethod, const UniValue &params
         printf("enter cprcTable execute find method  \n");
         std::cout<<pcmd->category<<pcmd->name<<pcmd->actor<<std::endl;
         // Execute
-        return pcmd->actor(params, false);
+        UniValue rest =  pcmd->actor(params, false);
+
+        printf("enter cprcTable execute out  \n");
+        return rest;
     }
     catch (const std::exception& e)
     {
