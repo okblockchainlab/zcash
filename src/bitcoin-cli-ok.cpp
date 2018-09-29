@@ -376,10 +376,10 @@ bool g_AppInitRPC = false;
 UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &params_formt){
 
     UniValue result("");
-   /* try {
+    try {
         if (!g_AppInitRPC)
         {
-            SelectBaseParams(CBaseChainParams::TESTNET);
+            //SelectBaseParams(CBaseChainParams::TESTNET);
             char params[2][15] = {"java", "ok_getAddress"};
             int ret = AppInitRPC(2, (char**)params);
             if (ret != CONTINUE_EXECUTION)
@@ -393,7 +393,7 @@ UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &para
     } catch (...) {
         PrintExceptionContinue(NULL, "AppInitRPC()");
         return result;
-    }*/
+    }
 
     try {
         result = CommandLineRPC(strMethod, params_formt);
