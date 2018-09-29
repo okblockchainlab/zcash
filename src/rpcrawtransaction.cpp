@@ -515,8 +515,10 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
         CTxOut out(nAmount, scriptPubKey);
         rawTx.vout.push_back(out);
     }
-    printf(" crateTransaciton  4\n");
-    return EncodeHexTx(rawTx);
+
+    std::string strEncode = EncodeHexTx(rawTx);
+    printf(" crateTransaciton  ret:%s4\n", strEncode.c_str());
+    return strEncode;
 }
 
 UniValue decoderawtransaction(const UniValue& params, bool fHelp)
