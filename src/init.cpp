@@ -1138,7 +1138,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     // ********************************************************* Step 4: application initialization: dir lock, daemonize, pidfile, debug log
 
     printf("a8\n");
-    return true;
+
     // Initialize libsodium
     if (init_and_check_sodium() == -1) {
         return false;
@@ -1172,7 +1172,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         return InitError(strprintf(_("Cannot obtain a lock on data directory %s. Zcash is probably already running.") + " %s.", strDataDir, e.what()));
     }
 
-
+    return true;
 
 #ifndef WIN32
     CreatePidFile(GetPidFile(), getpid());

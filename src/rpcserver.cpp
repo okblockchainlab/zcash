@@ -584,7 +584,7 @@ UniValue CRPCTable::execute(const std::string &strMethod, const UniValue &params
     g_rpcSignals.PreCommand(*pcmd);
     try
     {
-        printf("enter cprcTable execute find method 4 \n");
+        printf("enter cprcTable execute find method  \n");
         // Execute
         return pcmd->actor(params, false);
     }

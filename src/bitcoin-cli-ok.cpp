@@ -198,7 +198,6 @@ bool AppInit(int argc, char* argv[])
 CRPCTable rpcTalbe;
 UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 {
-    printf("enter CommandLineRPC \n\n");
     std::string strPrint;
     UniValue result;
     int nRet = 0;
