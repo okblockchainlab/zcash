@@ -168,7 +168,7 @@ bool AppInit(int argc, char* argv[])
                 fprintf(stderr, "Error: setsid() returned %d errno %d\n", sid, errno);
         }
 #endif
-        SoftSetBoolArg("-server", true);
+        SoftSetBoolArg("-server", false);
 
         fRet = AppInit2(threadGroup, scheduler);
     }
@@ -274,7 +274,7 @@ UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &para
             SetupEnvironment();
 
             // Connect bitcoind signal handlers
-            noui_connect();
+            //noui_connect();
 
             int argc = 0;
             char* argv[] = {};
