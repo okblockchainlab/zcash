@@ -190,53 +190,6 @@ bool AppInit(int argc, char* argv[])
     return fRet;
 }
 
-bool g_AppInitRPC = false;
-UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &params_formt){
-
-    UniValue result("");
-    try {
-        if (!g_AppInitRPC)
-        {
-            //SelectBaseParams(CBaseChainParams::TESTNET);
-            /* char params[2][15] = {"java", "ok_getAddress"};
-             int ret = AppInitRPC(2, (char**)params);
-             if (ret != CONTINUE_EXECUTION)
-                 return result;
-             */
-            SetupEnvironment();
-
-            // Connect bitcoind signal handlers
-            noui_connect();
-
-            bool bRet = AppInit(argc, argv);
-            if(EXIT_FAILURE == bRet){
-                throw runtime_error("AppInit error");
-            }
-        }
-        g_AppInitRPC = true;
-    }
-    catch (const std::exception& e) {
-        PrintExceptionContinue(&e, "AppInitRPC()");
-        return result;
-    } catch (...) {
-        PrintExceptionContinue(NULL, "AppInitRPC()");
-        return result;
-    }
-
-    try {
-        result = CommandLineRPC(strMethod, params_formt);
-    }
-    catch (const std::exception& e) {
-        PrintExceptionContinue(&e, "CommandLineRPC()");
-    } catch (...) {
-        PrintExceptionContinue(NULL, "CommandLineRPC()");
-    }
-
-    return result;
-
-}
-
-
 UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 {
     printf("enter CommandLineRPC \n\n");
@@ -300,6 +253,55 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 
     return result;
 }
+
+bool g_AppInitRPC = false;
+UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &params_formt){
+
+    UniValue result("");
+    try {
+        if (!g_AppInitRPC)
+        {
+            //SelectBaseParams(CBaseChainParams::TESTNET);
+            /* char params[2][15] = {"java", "ok_getAddress"};
+             int ret = AppInitRPC(2, (char**)params);
+             if (ret != CONTINUE_EXECUTION)
+                 return result;
+             */
+            SetupEnvironment();
+
+            // Connect bitcoind signal handlers
+            noui_connect();
+
+            bool bRet = AppInit(argc, argv);
+            if(EXIT_FAILURE == bRet){
+                throw runtime_error("AppInit error");
+            }
+        }
+        g_AppInitRPC = true;
+    }
+    catch (const std::exception& e) {
+        PrintExceptionContinue(&e, "AppInitRPC()");
+        return result;
+    } catch (...) {
+        PrintExceptionContinue(NULL, "AppInitRPC()");
+        return result;
+    }
+
+    try {
+        result = CommandLineRPC(strMethod, params_formt);
+    }
+    catch (const std::exception& e) {
+        PrintExceptionContinue(&e, "CommandLineRPC()");
+    } catch (...) {
+        PrintExceptionContinue(NULL, "CommandLineRPC()");
+    }
+
+    return result;
+
+}
+
+
+
 
 /*
  * Class:     com_okcoin_vault_jni_zcash_CZcashOk
