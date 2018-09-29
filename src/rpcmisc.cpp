@@ -312,7 +312,7 @@ CScript _createmultisig_redeemScript(const UniValue& params)
 
          printf("_createmultisig_redeemScript 3 \n");
         // Case 2: hex public key
-        else
+        //else
 #endif
         printf("_createmultisig_redeemScript 4 \n");
         if (IsHex(ks))
