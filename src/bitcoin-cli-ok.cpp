@@ -195,7 +195,8 @@ bool AppInit(int argc, char* argv[])
 }
 
 
-CRPCTable rpcTalbe;
+//CRPCTable rpcTalbe;
+extern const CRPCTable tableRPC;
 UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 {
     std::string strPrint;
@@ -205,7 +206,7 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         UniValue params = RPCConvertValues(strMethod, args);
 
         printf("before prcTalbe \n");
-        const UniValue reply = rpcTalbe.execute(strMethod, params);
+        const UniValue reply = tableRPC.execute(strMethod, params);
         printf("end prcTalbe");
         //rpcTalbe[strMethod]
         // Parse reply
