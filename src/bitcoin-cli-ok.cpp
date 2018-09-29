@@ -343,6 +343,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
     std::vector<std::string> paramEn  = std::vector<std::string>(vArgs.begin()+1, vArgs.end());
     UniValue ret = EXEMethod(strMethod, paramEn);
 
+    printf("Java_com_okcoin_vault_jni_zcash_CZcashOk_execute EXEMethod end \n");
 
     std::vector<std::string> keys = ret.getKeys();
     for (int i=0; i<keys.size(); i++){
