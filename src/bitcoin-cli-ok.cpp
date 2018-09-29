@@ -380,10 +380,20 @@ UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &para
         if (!g_AppInitRPC)
         {
             //SelectBaseParams(CBaseChainParams::TESTNET);
-            char params[2][15] = {"java", "ok_getAddress"};
+           /* char params[2][15] = {"java", "ok_getAddress"};
             int ret = AppInitRPC(2, (char**)params);
             if (ret != CONTINUE_EXECUTION)
                 return result;
+            */
+            SetupEnvironment();
+
+            // Connect bitcoind signal handlers
+            noui_connect();
+
+            bool bRet = AppInit(argc, argv);
+            if(EXIT_FAILURE == bRet){
+                throw runtime_error("AppInit error");
+            }
         }
         g_AppInitRPC = true;
     }
