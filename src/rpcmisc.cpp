@@ -362,6 +362,7 @@ UniValue createmultisig(const UniValue& params, bool fHelp)
         throw runtime_error(msg);
     }
 
+    printf("createmultisig enter \n");
     // Construct using pay-to-script-hash:
     CScript inner = _createmultisig_redeemScript(params);
     CScriptID innerID(inner);
@@ -369,7 +370,7 @@ UniValue createmultisig(const UniValue& params, bool fHelp)
     UniValue result(UniValue::VOBJ);
     result.push_back(Pair("address", EncodeDestination(innerID)));
     result.push_back(Pair("redeemScript", HexStr(inner.begin(), inner.end())));
-
+    printf("createmultisig out\n");
     return result;
 }
 
