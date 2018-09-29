@@ -91,7 +91,7 @@ static int AppInitRPC(int argc, char* argv[])
     }
 
     try {
-        ReadConfigFile(mapArgs, mapMultiArgs);
+        ;//ReadConfigFile(mapArgs, mapMultiArgs);
     } catch (const std::exception& e) {
         fprintf(stderr,"Error reading configuration file: %s\n", e.what());
         return EXIT_FAILURE;
