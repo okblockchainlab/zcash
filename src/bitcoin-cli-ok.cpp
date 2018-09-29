@@ -65,7 +65,7 @@ void WaitForShutdown(boost::thread_group* threadGroup)
 bool AppInit(int argc, char* argv[])
 {
     boost::thread_group threadGroup;
-    //CScheduler scheduler;
+    CScheduler scheduler;
 
     bool fRet = false;
 
@@ -171,7 +171,7 @@ bool AppInit(int argc, char* argv[])
 #endif
         SoftSetBoolArg("-server", false);
 
-        fRet = AppInit2(threadGroup);
+        fRet = AppInit2(threadGroup, scheduler);
     }
     catch (const std::exception& e) {
         PrintExceptionContinue(&e, "AppInit()");
