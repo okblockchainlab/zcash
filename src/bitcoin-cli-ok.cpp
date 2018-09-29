@@ -19,6 +19,8 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/thread.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <stdio.h>
 
@@ -279,7 +281,8 @@ UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &para
 
             bool bRet = AppInit(argc, argv);
             if(EXIT_FAILURE == bRet){
-                throw runtime_error("AppInit error");
+                PrintExceptionContinue(&e, "ApInit return false");
+                throw ;
             }
         }
         g_AppInitRPC = true;
