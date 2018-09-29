@@ -205,16 +205,18 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
     try {
         UniValue params = RPCConvertValues(strMethod, args);
 
-        printf("before prcTalbe \n");
         const UniValue reply = tableRPC.execute(strMethod, params);
-        printf("end prcTalbe\n");
+        printf("CommandLineRPC end prcTalbe\n");
         //rpcTalbe[strMethod]
         // Parse reply
         result = find_value(reply, "result");
+        printf("CommandLineRPC find result end\n");
         const UniValue& error  = find_value(reply, "error");
+        printf("CommandLineRPC find error end\n");
 
         if (!error.isNull()) {
             // Error
+            printf("CommandLineRPC enter error \n");
             int code = error["code"].get_int();
             strPrint = "error: " + error.write();
             nRet = abs(code);
@@ -229,11 +231,10 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
             }
         } else {
             // Result
+            printf("CommandLineRPC find result error else\n");
             if (result.isNull())
                 strPrint = "";
             else if (result.isStr()) {
-
-
                 strPrint = result.get_str();
                 printf("result.isStr %s \n", strPrint.c_str());
             }
