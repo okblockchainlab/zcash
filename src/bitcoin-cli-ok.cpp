@@ -281,8 +281,8 @@ UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &para
 
             bool bRet = AppInit(argc, argv);
             if(EXIT_FAILURE == bRet){
-                PrintExceptionContinue(&e, "ApInit return false");
-                throw ;
+                printf( "ApInit return false");
+                return result;
             }
         }
         g_AppInitRPC = true;
