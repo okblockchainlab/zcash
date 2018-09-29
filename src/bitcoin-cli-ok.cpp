@@ -259,7 +259,7 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         fprintf((nRet == 0 ? stdout : stderr), "%s\n", strPrint.c_str());
     }
 
-    printf("CommandLineRPC end out\n");
+    printf("CommandLineRPC end out strPrint:%s\n", strPrint.c_str());
     return result;
 }
 
@@ -342,6 +342,12 @@ JNIEXPORT jobjectArray JNICALL Java_com_okcoin_vault_jni_zcash_CZcashOk_execute
 
     std::vector<std::string> paramEn  = std::vector<std::string>(vArgs.begin()+1, vArgs.end());
     UniValue ret = EXEMethod(strMethod, paramEn);
+
+
+    std::vector<std::string> keys = ret.getkeys();
+    for (int i=0; i<keys.size(); i++){
+        printf("ret keys:%d:%s \n", i, keys[i].c_str());
+    }
 
     std::list<std::string> kvList;
     std::string context;
