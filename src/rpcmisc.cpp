@@ -273,9 +273,10 @@ UniValue z_validateaddress(const UniValue& params, bool fHelp)
  */
 CScript _createmultisig_redeemScript(const UniValue& params)
 {
+    printf("_createmultisig_redeemScript enter \n");
     int nRequired = params[0].get_int();
     const UniValue& keys = params[1].get_array();
-
+    printf("_createmultisig_redeemScript 1 \n");
     // Gather public keys
     if (nRequired < 1)
         throw runtime_error("a multisignature address must require at least one key to redeem");
@@ -287,6 +288,8 @@ CScript _createmultisig_redeemScript(const UniValue& params)
         throw runtime_error("Number of addresses involved in the multisignature address creation > 16\nReduce the number");
     std::vector<CPubKey> pubkeys;
     pubkeys.resize(keys.size());
+
+    printf("_createmultisig_redeemScript 2 \n");
     for (unsigned int i = 0; i < keys.size(); i++)
     {
         const std::string& ks = keys[i].get_str();
@@ -307,9 +310,11 @@ CScript _createmultisig_redeemScript(const UniValue& params)
             pubkeys[i] = vchPubKey;
         }
 
+         printf("_createmultisig_redeemScript 3 \n");
         // Case 2: hex public key
         else
 #endif
+        printf("_createmultisig_redeemScript 4 \n");
         if (IsHex(ks))
         {
             CPubKey vchPubKey(ParseHex(ks));
@@ -323,11 +328,12 @@ CScript _createmultisig_redeemScript(const UniValue& params)
         }
     }
     CScript result = GetScriptForMultisig(nRequired, pubkeys);
-
+    printf("_createmultisig_redeemScript 5 \n");
     if (result.size() > MAX_SCRIPT_ELEMENT_SIZE)
         throw runtime_error(
                 strprintf("redeemScript exceeds size limit: %d > %d", result.size(), MAX_SCRIPT_ELEMENT_SIZE));
 
+    printf("_createmultisig_redeemScript out \n");
     return result;
 }
 
