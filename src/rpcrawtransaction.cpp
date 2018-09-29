@@ -446,7 +446,6 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
             + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"{\\\"address\\\":0.01}\"")
         );
 
-    printf("enter crateTransaciton \n");
     LOCK(cs_main);
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VOBJ)(UniValue::VNUM), true);
     if (params[0].isNull() || params[1].isNull())
@@ -464,14 +463,12 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "nExpiryHeight must be less than TX_EXPIRY_HEIGHT_THRESHOLD.");
         }
     }
-    printf(" crateTransaciton  1 \n");
     if (params.size() > 2 && !params[2].isNull()) {
         int64_t nLockTime = params[2].get_int64();
         if (nLockTime < 0 || nLockTime > std::numeric_limits<uint32_t>::max())
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, locktime out of range");
         rawTx.nLockTime = nLockTime;
     }
-    printf(" crateTransaciton  2 \n");
     for (size_t idx = 0; idx < inputs.size(); idx++) {
         const UniValue& input = inputs[idx];
         const UniValue& o = input.get_obj();
@@ -496,7 +493,6 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
 
         rawTx.vin.push_back(in);
     }
-    printf(" crateTransaciton  3 \n");
     std::set<CTxDestination> destinations;
     vector<string> addrList = sendTo.getKeys();
     for (const std::string& name_ : addrList) {
@@ -517,7 +513,6 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
     }
 
     std::string strEncode = EncodeHexTx(rawTx);
-    printf(" crateTransaciton  ret:%s4\n", strEncode.c_str());
     return strEncode;
 }
 
