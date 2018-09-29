@@ -207,7 +207,7 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
 
         printf("before prcTalbe \n");
         const UniValue reply = tableRPC.execute(strMethod, params);
-        printf("end prcTalbe");
+        printf("end prcTalbe\n");
         //rpcTalbe[strMethod]
         // Parse reply
         result = find_value(reply, "result");
