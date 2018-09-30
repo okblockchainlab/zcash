@@ -1401,7 +1401,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         );
 
 
-    RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
+   /* RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
     if (params[0].isNull() || params[1].isNull() || params[2].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 and  3 must be non-null");
 
@@ -1564,8 +1564,8 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     }
 
     rawTx_z.tx = CTransaction(rawTx);
-
-    return EncodeHexTx_z(rawTx_z);
+    */
+    return "";//EncodeHexTx_z(rawTx_z);
 }
 
 UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
