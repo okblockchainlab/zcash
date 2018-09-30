@@ -208,8 +208,9 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         UniValue params = RPCConvertValues(strMethod, args);
 
         const UniValue reply = tableRPC.execute(strMethod, params);
+        result = reply;
         // Parse reply
-        if (reply.isStr())
+      /*  if (reply.isStr())
         {
             printf("CommandLineRPC reply isStr func:%s \n", strMethod.c_str());
             result = reply;
@@ -247,7 +248,7 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
             }
             else
                 strPrint = result.write(2);
-        }
+        }*/
     }
     catch (const boost::thread_interrupted&) {
         throw;
@@ -261,7 +262,7 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         nRet = EXIT_FAILURE;
     }
     catch (...) {
-        PrintExceptionContinue(NULL, "CommandLineRPC()");
+        PrintExceptionContinue(NULL, "CommandLineRPC() in");
         throw;
     }
 
