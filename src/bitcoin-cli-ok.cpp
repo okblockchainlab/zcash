@@ -254,6 +254,10 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         strPrint = std::string("error: ") + e.what();
         nRet = EXIT_FAILURE;
     }
+    catch (const runtime_error &e) {
+        strPrint = std::string("error runtime: ") + e.what();
+        nRet = EXIT_FAILURE;
+    }
     catch (...) {
         PrintExceptionContinue(NULL, "CommandLineRPC()");
         throw;
