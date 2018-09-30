@@ -273,10 +273,8 @@ UniValue z_validateaddress(const UniValue& params, bool fHelp)
  */
 CScript _createmultisig_redeemScript(const UniValue& params)
 {
-    printf("_createmultisig_redeemScript enter \n");
     int nRequired = params[0].get_int();
     const UniValue& keys = params[1].get_array();
-    printf("_createmultisig_redeemScript 1 \n");
     // Gather public keys
     if (nRequired < 1)
         throw runtime_error("a multisignature address must require at least one key to redeem");
@@ -289,7 +287,6 @@ CScript _createmultisig_redeemScript(const UniValue& params)
     std::vector<CPubKey> pubkeys;
     pubkeys.resize(keys.size());
 
-    printf("_createmultisig_redeemScript 2 \n");
     for (unsigned int i = 0; i < keys.size(); i++)
     {
         const std::string& ks = keys[i].get_str();
@@ -310,35 +307,27 @@ CScript _createmultisig_redeemScript(const UniValue& params)
             pubkeys[i] = vchPubKey;
         }
 
-         printf("_createmultisig_redeemScript 3 \n");
+
         // Case 2: hex public key
         //else
 #endif
-        printf("_createmultisig_redeemScript 4 KS:%s\n", ks.c_str());
         if (IsHex(ks))
         {
-            printf("_createmultisig_redeemScript 41 \n");
             CPubKey vchPubKey(ParseHex(ks));
-            printf("_createmultisig_redeemScript 42 \n");
             if (!vchPubKey.IsFullyValid())
                 throw runtime_error(" Invalid public key: "+ks);
             pubkeys[i] = vchPubKey;
-            printf("_createmultisig_redeemScript 43 \n");
         }
         else
         {
-            printf("_createmultisig_redeemScript 44 \n");
             throw runtime_error(" Invalid public key: "+ks);
         }
     }
-    printf("_createmultisig_redeemScript 45 \n");
     CScript result = GetScriptForMultisig(nRequired, pubkeys);
-    printf("_createmultisig_redeemScript 5 \n");
     if (result.size() > MAX_SCRIPT_ELEMENT_SIZE)
         throw runtime_error(
                 strprintf("redeemScript exceeds size limit: %d > %d", result.size(), MAX_SCRIPT_ELEMENT_SIZE));
 
-    printf("_createmultisig_redeemScript out \n");
     return result;
 }
 
@@ -373,7 +362,6 @@ UniValue createmultisig(const UniValue& params, bool fHelp)
         throw runtime_error(msg);
     }
 
-    printf("createmultisig enter \n");
     // Construct using pay-to-script-hash:
     CScript inner = _createmultisig_redeemScript(params);
     CScriptID innerID(inner);
@@ -381,7 +369,6 @@ UniValue createmultisig(const UniValue& params, bool fHelp)
     UniValue result(UniValue::VOBJ);
     result.push_back(Pair("address", EncodeDestination(innerID)));
     result.push_back(Pair("redeemScript", HexStr(inner.begin(), inner.end())));
-    printf("createmultisig out\n");
     return result;
 }
 
