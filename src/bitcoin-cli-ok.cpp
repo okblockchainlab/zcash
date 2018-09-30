@@ -22,6 +22,8 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 
+#include <stdexcept>
+
 #include <stdio.h>
 
 /* Introduction text for doxygen: */
@@ -254,7 +256,7 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         strPrint = std::string("error: ") + e.what();
         nRet = EXIT_FAILURE;
     }
-    catch (const runtime_error &e) {
+    catch (const std::runtime_error &e) {
         strPrint = std::string("error runtime: ") + e.what();
         nRet = EXIT_FAILURE;
     }
