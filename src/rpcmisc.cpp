@@ -317,16 +317,21 @@ CScript _createmultisig_redeemScript(const UniValue& params)
         printf("_createmultisig_redeemScript 4 \n");
         if (IsHex(ks))
         {
+            printf("_createmultisig_redeemScript 41 \n");
             CPubKey vchPubKey(ParseHex(ks));
+            printf("_createmultisig_redeemScript 42 \n");
             if (!vchPubKey.IsFullyValid())
                 throw runtime_error(" Invalid public key: "+ks);
             pubkeys[i] = vchPubKey;
+            printf("_createmultisig_redeemScript 43 \n");
         }
         else
         {
+            printf("_createmultisig_redeemScript 44 \n");
             throw runtime_error(" Invalid public key: "+ks);
         }
     }
+    printf("_createmultisig_redeemScript 45 \n");
     CScript result = GetScriptForMultisig(nRequired, pubkeys);
     printf("_createmultisig_redeemScript 5 \n");
     if (result.size() > MAX_SCRIPT_ELEMENT_SIZE)
