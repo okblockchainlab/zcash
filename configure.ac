@@ -88,7 +88,7 @@ AC_ARG_ENABLE([wallet],
   [AS_HELP_STRING([--enable-wallet],
   [enable wallet (default is yes)])],
   [enable_wallet=$enableval],
-  [enable_wallet=no])
+  [enable_wallet=yes])
 
 
 AC_ARG_ENABLE([mining],

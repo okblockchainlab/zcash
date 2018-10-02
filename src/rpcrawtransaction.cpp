@@ -1401,7 +1401,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         );
 
 
-   /* RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
+    RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
     if (params[0].isNull() || params[1].isNull() || params[2].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 and  3 must be non-null");
 
@@ -1564,7 +1564,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     }
 
     rawTx_z.tx = CTransaction(rawTx);
-    */
+
     return "";//EncodeHexTx_z(rawTx_z);
 }
 
@@ -1629,7 +1629,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
                 + HelpExampleRpc("signrawtransaction", "\"myhex\"")
         );
 
-   /* RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR)(UniValue::VARR)(UniValue::VARR)(UniValue::VSTR), true);
+    RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR)(UniValue::VARR)(UniValue::VARR)(UniValue::VSTR), true);
 
 #ifdef ENABLE_WALLET
         LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
@@ -1652,7 +1652,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
     for (int i=0; i<tx_z.tx.vout.size(); i++) {
         t_outputs_total += tx_z.tx.vout[i].nValue;
     }
-*/
+
     /**
     * SCENARIO #1
     *
@@ -1661,7 +1661,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
     * There are no zaddrs or joinsplits involved.
     */
 
-  /*  if (tx_z.vinz.size() == 0 && tx_z.voutz.size() == 0){
+    if (tx_z.vinz.size() == 0 && tx_z.voutz.size() == 0){
         UniValue rawtxnValue = EncodeHexTx(tx_z.tx);
         if (rawtxnValue.isNull()) {
             throw JSONRPCError(RPC_WALLET_ERROR, "Missing hex data for raw transaction");
@@ -1677,11 +1677,11 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
             paramTx.push_back(params[3].get_str());
         }
         return signrawtransaction(paramTx, false);
-    }*/
+    }
     /**
      * SCENARIO #1 end
      */
-/*
+
 
     uint256 joinSplitPubKey_;
     unsigned char joinSplitPrivKey_[crypto_sign_SECRETKEYBYTES];
@@ -1712,7 +1712,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
         zOutputsDeque.push_back(SendManyRecipient(tx_z.voutz[i].jso.address, tx_z.voutz[i].jso.value, tx_z.voutz[i].jso.memo));
     }
 
-*/
+
     /**
     * SCENARIO #2
     *
@@ -1720,7 +1720,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
      *      -> zaddrs
     *
     */
-/*
+
     if (tx_z.vinz.size() == 0 && tx_z.voutz.size() > 0){
 
         // Create joinsplits, where each output represents a zaddr recipient.
@@ -1767,14 +1767,14 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
             paramTx.push_back(params[3].get_str());
         }
         return signrawtransaction(paramTx, false);
-    }*/
+    }
     /**
      * SCENARIO #2 end
      */
 
 
     //zaddr: spendingkey
-  /* std::vector<SpendingKey> vecSecret;
+   std::vector<SpendingKey> vecSecret;
     if (params.size() > 2 && !params[2].isNull()) {
         UniValue keys = params[2].get_array();
         for (size_t idx = 0; idx < keys.size(); idx++) {
@@ -1788,7 +1788,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
 
             vecSecret.push_back(spendingkey);
         }
-    }*/
+    }
     /**
     * SCENARIO #3
     *
@@ -1798,7 +1798,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
     * There are no zaddrs or joinsplits involved.
     */
 
-  /*  UniValue obj(UniValue::VOBJ);
+    UniValue obj(UniValue::VOBJ);
     CAmount jsChange = 0;   // this is updated after each joinsplit
     int changeOutputIndex = -1; // this is updated after each joinsplit if jsChange > 0
     bool vpubNewProcessed = false;  // updated when vpub_new for miner fee and taddr outputs is set in last joinsplit
@@ -2034,7 +2034,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
             paramTx.push_back( UniValue(UniValue::VARR));
         else
             paramTx.push_back(params[i]);
-    }*/
+    }
     UniValue paramTx(UniValue::VARR);
 
     return signrawtransaction(paramTx, false);
