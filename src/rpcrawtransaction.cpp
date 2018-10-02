@@ -2035,7 +2035,6 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
         else
             paramTx.push_back(params[i]);
     }
-    UniValue paramTx(UniValue::VARR);
 
     return signrawtransaction(paramTx, false);
 }
