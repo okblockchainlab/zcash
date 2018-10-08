@@ -905,8 +905,8 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         if (NULL == ite)
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid txin.prevout.hash  key");
 
-        const CScript& prevPubKey = ite->second.scriptPubKey;
-        const CAmount& amount = ite->second.nValue;
+        CScript prevPubKey = ite->second.scriptPubKey;
+        CAmount amount = ite->second.nValue;
 
         SignatureData sigdata;
         // Only sign SIGHASH_SINGLE if there's a corresponding output:
