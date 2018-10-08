@@ -30,6 +30,7 @@
 #include <stdint.h>
 
 #include <boost/assign/list_of.hpp>
+#include <boost/unordered_map.hpp>
 
 #include <univalue.h>
 
