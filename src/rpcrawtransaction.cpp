@@ -673,7 +673,7 @@ private:
     uint256 salt;
 
 public:
-    CTxOutMapKeyHasher();
+    CTxOutMapKeyHasher(){};
 
     size_t operator()(const uint256& key) const {
         return key.GetHash(salt);
