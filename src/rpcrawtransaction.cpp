@@ -850,7 +850,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
                 */
 
                 CAmount amount = AmountFromValue(find_value(prevOut, "amount"));
-                cTxOutMap.insert(CTxOutMap::value_type(txid, new CTxOut(amount, scriptPubKey)));
+                cTxOutMap.insert(std::make_pair(txid, new CTxOut(amount, scriptPubKey)));
             }
 
             // if redeemScript given and not using the local wallet (private keys
