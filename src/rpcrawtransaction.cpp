@@ -665,6 +665,9 @@ static void TxInErrorToJSON(const CTxIn& txin, UniValue& vErrorsRet, const std::
     vErrorsRet.push_back(entry);
 }
 
+
+typedef std::map<uint256,CTxOut> CTxOutMap;
+
 UniValue signrawtransaction(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 4)
@@ -750,12 +753,16 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     if (txVariants.empty())
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Missing transaction");
 
+
+    //txhash - CTXOut
+    CTxOutMap cTxOutMap;
     // mergedTx will end up with all the signatures; it
     // starts as a clone of the rawtx:
     CMutableTransaction mergedTx(txVariants[0]);
 
     // Fetch previous transactions (inputs):
-    CCoinsView viewDummy;
+   //  去掉在线钱包记录，签名只做本地签名
+    /* CCoinsView viewDummy;
     CCoinsViewCache view(&viewDummy);
     {
         LOCK(mempool.cs);
@@ -770,7 +777,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         }
 
         view.SetBackend(viewDummy); // switch back to avoid locking mempool for too long
-    }
+    }*/
 
     bool fGivenKeys = false;
     CBasicKeyStore tempKeystore;
@@ -812,7 +819,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
             CScript scriptPubKey(pkData.begin(), pkData.end());
 
             {
-                CCoinsModifier coins = view.ModifyCoins(txid);
+               /* CCoinsModifier coins = view.ModifyCoins(txid);
                 if (coins->IsAvailable(nOut) && coins->vout[nOut].scriptPubKey != scriptPubKey) {
                     string err("Previous output scriptPubKey mismatch:\n");
                     err = err + ScriptToAsmStr(coins->vout[nOut].scriptPubKey) + "\nvs:\n"+
@@ -826,6 +833,10 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
                 if (prevOut.exists("amount")) {
                     coins->vout[nOut].nValue = AmountFromValue(find_value(prevOut, "amount"));
                 }
+                */
+
+                CAmount amount = AmountFromValue(find_value(prevOut, "amount");
+                cTxOutMap.insert(std::map<>::value_type(txid, new CTxOut(amount, scriptPubKey)));
             }
 
             // if redeemScript given and not using the local wallet (private keys
@@ -879,7 +890,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     const CTransaction txConst(mergedTx);
     // Sign what we can:
     for (unsigned int i = 0; i < mergedTx.vin.size(); i++) {
-        CTxIn& txin = mergedTx.vin[i];
+        /*CTxIn& txin = mergedTx.vin[i];
         const CCoins* coins = view.AccessCoins(txin.prevout.hash);
         if (coins == NULL || !coins->IsAvailable(txin.prevout.n)) {
             TxInErrorToJSON(txin, vErrors, "Input not found or already spent");
@@ -887,6 +898,14 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         }
         const CScript& prevPubKey = coins->vout[txin.prevout.n].scriptPubKey;
         const CAmount& amount = coins->vout[txin.prevout.n].nValue;
+         */
+
+        std::map<uint256,CTxOut>::itetator ite = cTxOutMap.find(txin.prevout.hash);
+        if (NULL == ite)
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid txin.prevout.hash  key");
+
+        const CScript& prevPubKey = ite->second.scriptPubKey;
+        const CAmount& amount = ite->second.nValue;
 
         SignatureData sigdata;
         // Only sign SIGHASH_SINGLE if there's a corresponding output:
