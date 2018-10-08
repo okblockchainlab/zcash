@@ -835,8 +835,8 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
                 }
                 */
 
-                CAmount amount = AmountFromValue(find_value(prevOut, "amount");
-                cTxOutMap.insert(std::map<>::value_type(txid, new CTxOut(amount, scriptPubKey)));
+                CAmount amount = AmountFromValue(find_value(prevOut, "amount"));
+                cTxOutMap.insert(std::map<uint256,CTxOut>::value_type(txid, new CTxOut(amount, scriptPubKey)));
             }
 
             // if redeemScript given and not using the local wallet (private keys
@@ -890,8 +890,8 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     const CTransaction txConst(mergedTx);
     // Sign what we can:
     for (unsigned int i = 0; i < mergedTx.vin.size(); i++) {
-        /*CTxIn& txin = mergedTx.vin[i];
-        const CCoins* coins = view.AccessCoins(txin.prevout.hash);
+        CTxIn& txin = mergedTx.vin[i];
+        /*const CCoins* coins = view.AccessCoins(txin.prevout.hash);
         if (coins == NULL || !coins->IsAvailable(txin.prevout.n)) {
             TxInErrorToJSON(txin, vErrors, "Input not found or already spent");
             continue;
@@ -900,7 +900,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         const CAmount& amount = coins->vout[txin.prevout.n].nValue;
          */
 
-        std::map<uint256,CTxOut>::itetator ite = cTxOutMap.find(txin.prevout.hash);
+        std::map<uint256,CTxOut>::iterator ite = cTxOutMap.find(txin.prevout.hash);
         if (NULL == ite)
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid txin.prevout.hash  key");
 
