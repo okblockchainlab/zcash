@@ -915,7 +915,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
          */
 
         CTxOutMap::iterator ite = cTxOutMap.find(txin.prevout.hash);
-        if (NULL == ite)
+        if (ite == cTxOutMap.end())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid txin.prevout.hash  key");
 
         CScript prevPubKey = ite->second.scriptPubKey;
