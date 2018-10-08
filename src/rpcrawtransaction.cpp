@@ -666,7 +666,7 @@ static void TxInErrorToJSON(const CTxIn& txin, UniValue& vErrorsRet, const std::
 }
 
 
-typedef std::map<uint256,CTxOut> CTxOutMap;
+typedef boost::unordered_map<uint256,CTxOut> CTxOutMap;
 
 UniValue signrawtransaction(const UniValue& params, bool fHelp)
 {
@@ -836,7 +836,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
                 */
 
                 CAmount amount = AmountFromValue(find_value(prevOut, "amount"));
-                cTxOutMap.insert(std::map<uint256,CTxOut>::value_type(txid, new CTxOut(amount, scriptPubKey)));
+                cTxOutMap.insert(boost::unordered_map<uint256,CTxOut>::value_type(txid, new CTxOut(amount, scriptPubKey)));
             }
 
             // if redeemScript given and not using the local wallet (private keys
@@ -900,7 +900,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         const CAmount& amount = coins->vout[txin.prevout.n].nValue;
          */
 
-        std::map<uint256,CTxOut>::iterator ite = cTxOutMap.find(txin.prevout.hash);
+        boost::unordered_map<uint256,CTxOut>::iterator ite = cTxOutMap.find(txin.prevout.hash);
         if (NULL == ite)
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid txin.prevout.hash  key");
 
