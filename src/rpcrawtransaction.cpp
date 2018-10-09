@@ -1434,7 +1434,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     printf("z_c12 %d \n", br);
     UniValue inputs_t = params[0].get_array();
 
-    inputs_t
+
     printf("z_c 13 \n");
     UniValue inputs_z = params[1].get_array();
     printf("z_c 14 \n");
