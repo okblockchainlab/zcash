@@ -450,6 +450,8 @@ const CChainParams &Params() {
 }
 
 CChainParams &Params(CBaseChainParams::Network network) {
+
+    printf("ChainParams &Params %d \n\n\n", network);
     switch (network) {
         case CBaseChainParams::MAIN:
             return mainParams;
