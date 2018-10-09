@@ -1543,13 +1543,14 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         printf("z_c 73 \n");
         bool isZaddr = false;
         CTxDestination taddr = DecodeDestination(address);
-        printf("z_c 74 \n");
+        printf("z_c 74 address :%s\n", address.c_str());
         if (!IsValidDestination(taddr)) {
             printf("z_c 75 \n");
             if (IsValidPaymentAddressString(address)) {
                 printf("z_c 76 \n");
                 isZaddr = true;
             } else {
+                printf("z_c 76 1\n");
                 throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, unknown address format: ")+address );
             }
         }
