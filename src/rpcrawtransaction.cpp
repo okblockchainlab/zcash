@@ -807,7 +807,6 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         }
     }
 #ifdef ENABLE_WALLET
-    printf("enter 3 \n");
     else if (pwalletMain)
         EnsureWalletIsUnlocked();
 #endif
