@@ -767,7 +767,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     if (txVariants.empty())
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Missing transaction");
 
-
+    printf("enter 1 \n");
     //txhash - CTXOut
     CTxOutMap cTxOutMap;
     // mergedTx will end up with all the signatures; it
@@ -792,7 +792,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 
         view.SetBackend(viewDummy); // switch back to avoid locking mempool for too long
     }*/
-
+    printf("enter 2 \n");
     bool fGivenKeys = false;
     CBasicKeyStore tempKeystore;
     if (params.size() > 2 && !params[2].isNull()) {
@@ -807,10 +807,12 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         }
     }
 #ifdef ENABLE_WALLET
+    printf("enter 3 \n");
     else if (pwalletMain)
         EnsureWalletIsUnlocked();
 #endif
 
+    printf("enter 4 \n");
     // Add previous txouts given in the RPC call:
     if (params.size() > 1 && !params[1].isNull()) {
         UniValue prevTxs = params[1].get_array();
@@ -853,6 +855,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
                 cTxOutMap[txid] = * new CTxOut(amount, scriptPubKey);
             }
 
+            printf("enter 5 \n");
             // if redeemScript given and not using the local wallet (private keys
             // given), add redeemScript to the tempKeystore so it can be signed:
             if (fGivenKeys && scriptPubKey.IsPayToScriptHash()) {
@@ -868,11 +871,14 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     }
 
 #ifdef ENABLE_WALLET
+    printf("enter 6 \n");
     const CKeyStore& keystore = ((fGivenKeys || !pwalletMain) ? tempKeystore : *pwalletMain);
 #else
+    printf("enter 7 \n");
     const CKeyStore& keystore = tempKeystore;
 #endif
 
+    printf("enter 8 \n");
     int nHashType = SIGHASH_ALL;
     if (params.size() > 3 && !params[3].isNull()) {
         static map<string, int> mapSigHashValues =
@@ -898,7 +904,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 
     // Script verification errors
     UniValue vErrors(UniValue::VARR);
-
+    printf("enter 9 \n");
     // Use CTransaction for the constant parts of the
     // transaction to avoid rehashing.
     const CTransaction txConst(mergedTx);
@@ -918,6 +924,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         if (ite == cTxOutMap.end())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid txin.prevout.hash  key");
 
+        printf("enter 10 \n");
         CScript prevPubKey = ite->second.scriptPubKey;
         CAmount amount = ite->second.nValue;
 
@@ -946,6 +953,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     if (!vErrors.empty()) {
         result.push_back(Pair("errors", vErrors));
     }
+    printf("enter 11 \n");
 
     return result;
 }
