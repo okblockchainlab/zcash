@@ -819,20 +819,21 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
             const UniValue& p = prevTxs[idx];
             if (!p.isObject())
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "expected object with {\"txid'\",\"vout\",\"scriptPubKey\"}");
-
+            printf("enter 41 \n");
             UniValue prevOut = p.get_obj();
 
+            printf("enter 42 \n");
             RPCTypeCheckObj(prevOut, boost::assign::map_list_of("txid", UniValue::VSTR)("vout", UniValue::VNUM)("scriptPubKey", UniValue::VSTR));
 
             uint256 txid = ParseHashO(prevOut, "txid");
-
+            printf("enter 43 \n");
             int nOut = find_value(prevOut, "vout").get_int();
             if (nOut < 0)
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "vout must be positive");
-
+            printf("enter 44 \n");
             vector<unsigned char> pkData(ParseHexO(prevOut, "scriptPubKey"));
             CScript scriptPubKey(pkData.begin(), pkData.end());
-
+            printf("enter 45 \n");
             {
                /* CCoinsModifier coins = view.ModifyCoins(txid);
                 if (coins->IsAvailable(nOut) && coins->vout[nOut].scriptPubKey != scriptPubKey) {
@@ -849,8 +850,9 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
                     coins->vout[nOut].nValue = AmountFromValue(find_value(prevOut, "amount"));
                 }
                 */
-
+                printf("enter 46 \n");
                 CAmount amount = AmountFromValue(find_value(prevOut, "amount"));
+                printf("enter 47 \n");
                 cTxOutMap[txid] = * new CTxOut(amount, scriptPubKey);
             }
 
