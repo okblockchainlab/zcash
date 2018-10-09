@@ -883,18 +883,20 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
             (string("SINGLE"), int(SIGHASH_SINGLE))
             (string("SINGLE|ANYONECANPAY"), int(SIGHASH_SINGLE|SIGHASH_ANYONECANPAY))
             ;
+        printf("sing 6 1\n");
         string strHashType = params[3].get_str();
+        printf("sing 6 2\n");
         if (mapSigHashValues.count(strHashType))
             nHashType = mapSigHashValues[strHashType];
         else
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid sighash param");
     }
-
+    printf("sing 6 3\n");
     bool fHashSingle = ((nHashType & ~SIGHASH_ANYONECANPAY) == SIGHASH_SINGLE);
 
     // Grab the current consensus branch ID
     auto consensusBranchId = CurrentEpochBranchId(chainActive.Height() + 1, Params().GetConsensus());
-
+    printf("sing 6 4\n");
     // Script verification errors
     UniValue vErrors(UniValue::VARR);
     // Use CTransaction for the constant parts of the
@@ -902,6 +904,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     const CTransaction txConst(mergedTx);
     // Sign what we can:
     for (unsigned int i = 0; i < mergedTx.vin.size(); i++) {
+        printf("sing 6 5\n");
         CTxIn& txin = mergedTx.vin[i];
         /*const CCoins* coins = view.AccessCoins(txin.prevout.hash);
         if (coins == NULL || !coins->IsAvailable(txin.prevout.n)) {
@@ -911,26 +914,26 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         const CScript& prevPubKey = coins->vout[txin.prevout.n].scriptPubKey;
         const CAmount& amount = coins->vout[txin.prevout.n].nValue;
          */
-
+        printf("sing 6 6\n");
         CTxOutMap::iterator ite = cTxOutMap.find(txin.prevout.hash);
         if (ite == cTxOutMap.end())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid txin.prevout.hash  key");
 
         CScript prevPubKey = ite->second.scriptPubKey;
         CAmount amount = ite->second.nValue;
-
+        printf("sing 6 7\n");
         SignatureData sigdata;
         // Only sign SIGHASH_SINGLE if there's a corresponding output:
         if (!fHashSingle || (i < mergedTx.vout.size()))
             ProduceSignature(MutableTransactionSignatureCreator(&keystore, &mergedTx, i, amount, nHashType), prevPubKey, sigdata, consensusBranchId);
-
+        printf("sing 6 8\n");
         // ... and merge in other signatures:
         BOOST_FOREACH(const CMutableTransaction& txv, txVariants) {
             sigdata = CombineSignatures(prevPubKey, TransactionSignatureChecker(&txConst, i, amount), sigdata, DataFromTransaction(txv, i), consensusBranchId);
         }
-
+        printf("sing 6 9\n");
         UpdateTransaction(mergedTx, i, sigdata);
-
+        printf("sing 6 10\n");
         ScriptError serror = SCRIPT_ERR_OK;
         if (!VerifyScript(txin.scriptSig, prevPubKey, STANDARD_SCRIPT_VERIFY_FLAGS, TransactionSignatureChecker(&txConst, i, amount), consensusBranchId, &serror)) {
             TxInErrorToJSON(txin, vErrors, ScriptErrorString(serror));
