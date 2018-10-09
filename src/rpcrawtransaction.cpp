@@ -1384,7 +1384,7 @@ UniValue perform_joinsplit(AsyncJoinSplitInfo & info,  const SpendingKey &spendi
 
 //add by okcoin
 UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
-    if (fHelp || params.size() < 2 || params.size() > 3)
+    if (fHelp || params.size() != 3)
         throw runtime_error(
                 "z_createrawtransaction_ok [{\"txid\":\"id\",\"z_addr\":},...] {\"address\":amount,...} ( locktime )\n"
                 "\nCreate a transaction spending the given inputs and sending to the given addresses.\n"
@@ -1429,7 +1429,12 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     if (params[0].isNull() || params[1].isNull() || params[2].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 and  3 must be non-null");
     printf("z_c 12 \n");
+
+    bool br = params[0].isArray();
+    printf("z_c12 %d \n", br);
     UniValue inputs_t = params[0].get_array();
+
+    inputs_t
     printf("z_c 13 \n");
     UniValue inputs_z = params[1].get_array();
     printf("z_c 14 \n");
