@@ -1424,7 +1424,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         );
 
     printf("z_c 1 \n");
-    RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
+    //RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
     printf("z_c 11 \n");
     if (params[0].isNull() || params[1].isNull() || params[2].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 and  3 must be non-null");
