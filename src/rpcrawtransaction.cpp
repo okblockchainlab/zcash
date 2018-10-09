@@ -802,7 +802,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         printf("sing 44 \n");
         for (size_t idx = 0; idx < keys.size(); idx++) {
             UniValue k = keys[idx];
-            printf("sing 45 keys:%s\n", k.get_str());
+            printf("sing 45 keys:%s\n", k.get_str().c_str());
             CKey key = DecodeSecret(k.get_str());
             printf("sing 451 \n");
             if (!key.IsValid())
