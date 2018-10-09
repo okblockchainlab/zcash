@@ -1670,8 +1670,6 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
 #endif
 
 
-
-
     CTransaction_z tx_z;
     std::string strHex = params[0].get_str();
     if (!DecodeHexTx_z(tx_z, strHex))
