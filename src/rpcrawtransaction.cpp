@@ -802,8 +802,9 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         printf("sing 44 \n");
         for (size_t idx = 0; idx < keys.size(); idx++) {
             UniValue k = keys[idx];
-            printf("sing 45 \n");
+            printf("sing 45 keys:%s\n", k.get_str());
             CKey key = DecodeSecret(k.get_str());
+            printf("sing 451 \n");
             if (!key.IsValid())
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid private key");
             printf("sing 46 \n");
