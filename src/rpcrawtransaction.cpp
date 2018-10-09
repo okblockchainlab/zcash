@@ -1660,29 +1660,29 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
                 + HelpExampleCli("signrawtransaction", "\"myhex\"")
                 + HelpExampleRpc("signrawtransaction", "\"myhex\"")
         );
-
+    printf("z_sign 1\n");
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR)(UniValue::VARR)(UniValue::VARR)(UniValue::VSTR), true);
-
+    printf("z_sign 2\n");
 #ifdef ENABLE_WALLET
         LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
 #else
     LOCK(cs_main);
 #endif
 
-
+    printf("z_sign 3\n");
     CTransaction_z tx_z;
     std::string strHex = params[0].get_str();
     if (!DecodeHexTx_z(tx_z, strHex))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX_z decode failed");
 
-
+    printf("z_sign 4\n");
     CTransaction tx_ = tx_z.tx;
-
+    printf("z_sign5 \n");
     CAmount t_outputs_total = 0;
     for (int i=0; i<tx_z.tx.vout.size(); i++) {
         t_outputs_total += tx_z.tx.vout[i].nValue;
     }
-
+    printf("z_sign 6\n");
     /**
     * SCENARIO #1
     *
@@ -1690,22 +1690,24 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
     *
     * There are no zaddrs or joinsplits involved.
     */
-
+    printf("z_sign 7\n");
     if (tx_z.vinz.size() == 0 && tx_z.voutz.size() == 0){
         UniValue rawtxnValue = EncodeHexTx(tx_z.tx);
         if (rawtxnValue.isNull()) {
             throw JSONRPCError(RPC_WALLET_ERROR, "Missing hex data for raw transaction");
         }
+        printf("z_sign 8\n");
         UniValue paramTx(UniValue::VARR);
         paramTx.push_back(rawtxnValue.get_str());
         if(params.size() == 3){
             paramTx.push_back(params[1].get_array());
             paramTx.push_back(params[2].get_array());
         }
-
+        printf("z_sign 9\n");
         if(params.size() == 4){
             paramTx.push_back(params[3].get_str());
         }
+        printf("z_sign 10\n");
         return signrawtransaction(paramTx, false);
     }
     /**
