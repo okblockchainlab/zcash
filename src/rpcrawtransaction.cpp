@@ -767,7 +767,6 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     if (txVariants.empty())
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Missing transaction");
 
-    printf("enter 1 \n");
     //txhash - CTXOut
     CTxOutMap cTxOutMap;
     // mergedTx will end up with all the signatures; it
@@ -792,7 +791,6 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 
         view.SetBackend(viewDummy); // switch back to avoid locking mempool for too long
     }*/
-    printf("enter 2 \n");
     bool fGivenKeys = false;
     CBasicKeyStore tempKeystore;
     if (params.size() > 2 && !params[2].isNull()) {
@@ -811,7 +809,6 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         EnsureWalletIsUnlocked();
 #endif
 
-    printf("enter 4 \n");
     // Add previous txouts given in the RPC call:
     if (params.size() > 1 && !params[1].isNull()) {
         UniValue prevTxs = params[1].get_array();
@@ -819,21 +816,15 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
             const UniValue& p = prevTxs[idx];
             if (!p.isObject())
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "expected object with {\"txid'\",\"vout\",\"scriptPubKey\"}");
-            printf("enter 41 \n");
             UniValue prevOut = p.get_obj();
-
-            printf("enter 42 \n");
             RPCTypeCheckObj(prevOut, boost::assign::map_list_of("txid", UniValue::VSTR)("vout", UniValue::VNUM)("scriptPubKey", UniValue::VSTR));
 
             uint256 txid = ParseHashO(prevOut, "txid");
-            printf("enter 43 \n");
             int nOut = find_value(prevOut, "vout").get_int();
             if (nOut < 0)
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "vout must be positive");
-            printf("enter 44 \n");
             vector<unsigned char> pkData(ParseHexO(prevOut, "scriptPubKey"));
             CScript scriptPubKey(pkData.begin(), pkData.end());
-            printf("enter 45 \n");
             {
                /* CCoinsModifier coins = view.ModifyCoins(txid);
                 if (coins->IsAvailable(nOut) && coins->vout[nOut].scriptPubKey != scriptPubKey) {
@@ -850,13 +841,10 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
                     coins->vout[nOut].nValue = AmountFromValue(find_value(prevOut, "amount"));
                 }
                 */
-                printf("enter 46 \n");
                 CAmount amount = AmountFromValue(find_value(prevOut, "amount"));
-                printf("enter 47 \n");
                 cTxOutMap[txid] = * new CTxOut(amount, scriptPubKey);
             }
 
-            printf("enter 5 \n");
             // if redeemScript given and not using the local wallet (private keys
             // given), add redeemScript to the tempKeystore so it can be signed:
             if (fGivenKeys && scriptPubKey.IsPayToScriptHash()) {
@@ -872,14 +860,11 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     }
 
 #ifdef ENABLE_WALLET
-    printf("enter 6 \n");
     const CKeyStore& keystore = ((fGivenKeys || !pwalletMain) ? tempKeystore : *pwalletMain);
 #else
-    printf("enter 7 \n");
     const CKeyStore& keystore = tempKeystore;
 #endif
 
-    printf("enter 8 \n");
     int nHashType = SIGHASH_ALL;
     if (params.size() > 3 && !params[3].isNull()) {
         static map<string, int> mapSigHashValues =
@@ -905,7 +890,6 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 
     // Script verification errors
     UniValue vErrors(UniValue::VARR);
-    printf("enter 9 \n");
     // Use CTransaction for the constant parts of the
     // transaction to avoid rehashing.
     const CTransaction txConst(mergedTx);
@@ -925,7 +909,6 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         if (ite == cTxOutMap.end())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid txin.prevout.hash  key");
 
-        printf("enter 10 \n");
         CScript prevPubKey = ite->second.scriptPubKey;
         CAmount amount = ite->second.nValue;
 
@@ -954,7 +937,6 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     if (!vErrors.empty()) {
         result.push_back(Pair("errors", vErrors));
     }
-    printf("enter 11 \n");
 
     return result;
 }
@@ -1404,7 +1386,6 @@ UniValue perform_joinsplit(AsyncJoinSplitInfo & info,  const SpendingKey &spendi
 UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() < 2 || params.size() > 3)
         throw runtime_error(
-
                 "z_createrawtransaction_ok [{\"txid\":\"id\",\"z_addr\":},...] {\"address\":amount,...} ( locktime )\n"
                 "\nCreate a transaction spending the given inputs and sending to the given addresses.\n"
                 "Returns hex-encoded raw transaction.\n"
@@ -1442,7 +1423,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
                 "\nExamples\n"
         );
 
-
+    printf("z_c 1 \n");
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
     if (params[0].isNull() || params[1].isNull() || params[2].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 and  3 must be non-null");
@@ -1459,7 +1440,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     if( inputs_t.size()>0 && inputs_z.size()>0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, only one input  is allowed");
 
-
+    printf("z_c 2 \n");
     int nextBlockHeight = chainActive.Height() + 1;
     CMutableTransaction rawTx = CreateNewContextualCMutableTransaction(
             Params().GetConsensus(), nextBlockHeight);
@@ -1471,20 +1452,20 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         LOCK(cs_main);
         rawTx_z.consensusBranchId_ = CurrentEpochBranchId(chainActive.Height() + 1, Params().GetConsensus());
     }
-
+    printf("z_c 3\n");
     if (NetworkUpgradeActive(nextBlockHeight, Params().GetConsensus(), Consensus::UPGRADE_OVERWINTER)) {
         if (rawTx.nExpiryHeight >= TX_EXPIRY_HEIGHT_THRESHOLD){
             throw JSONRPCError(RPC_INVALID_PARAMETER, "nExpiryHeight must be less than TX_EXPIRY_HEIGHT_THRESHOLD.");
         }
     }
-
+    printf("z_c 4 \n");
     if (params.size() > 3 && !params[3].isNull()) {
         int64_t nLockTime = params[2].get_int64();
         if (nLockTime < 0 || nLockTime > std::numeric_limits<uint32_t>::max())
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, locktime out of range");
         rawTx.nLockTime = nLockTime;
     }
-
+    printf("z_c 5 \n");
     for (size_t idx = 0; idx < inputs_t.size(); idx++) {
         const UniValue& input = inputs_t[idx];
         const UniValue& o = input.get_obj();
@@ -1509,6 +1490,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         rawTx.vin.push_back(in);
     }
 
+    printf("z_c 6 \n");
     for (size_t idx = 0; idx < inputs_z.size(); idx++) {
         const UniValue& input = inputs_z[idx];
         const UniValue& o = input.get_obj();
@@ -1548,7 +1530,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         }
     }
 
-
+    printf("z_c 7 \n");
     // Keep track of addresses to spot duplicates
     set<std::string> setAddress;
     for (const UniValue& o : outputs.getValues()) {
@@ -1606,8 +1588,8 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     }
 
     rawTx_z.tx = CTransaction(rawTx);
-
-    return "";//EncodeHexTx_z(rawTx_z);
+    printf("z_c 8 \n");
+    return EncodeHexTx_z(rawTx_z);
 }
 
 UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
