@@ -773,7 +773,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     // mergedTx will end up with all the signatures; it
     // starts as a clone of the rawtx:
     CMutableTransaction mergedTx(txVariants[0]);
-
+    printf("sing 41 \n");
     // Fetch previous transactions (inputs):
    //  去掉在线钱包记录，签名只做本地签名
     /* CCoinsView viewDummy;
@@ -794,14 +794,19 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     }*/
     bool fGivenKeys = false;
     CBasicKeyStore tempKeystore;
+    printf("sing 42 \n");
     if (params.size() > 2 && !params[2].isNull()) {
         fGivenKeys = true;
+        printf("sing 43 \n");
         UniValue keys = params[2].get_array();
+        printf("sing 44 \n");
         for (size_t idx = 0; idx < keys.size(); idx++) {
             UniValue k = keys[idx];
+            printf("sing 45 \n");
             CKey key = DecodeSecret(k.get_str());
             if (!key.IsValid())
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid private key");
+            printf("sing 46 \n");
             tempKeystore.AddKey(key);
         }
     }
