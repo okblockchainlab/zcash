@@ -1425,18 +1425,21 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
 
     printf("z_c 1 \n");
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
+    printf("z_c 11 \n");
     if (params[0].isNull() || params[1].isNull() || params[2].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 and  3 must be non-null");
-
+    printf("z_c 12 \n");
     UniValue inputs_t = params[0].get_array();
+    printf("z_c 13 \n");
     UniValue inputs_z = params[1].get_array();
+    printf("z_c 14 \n");
     UniValue outputs = params[2].get_array();
-
+    printf("z_c 15 \n");
 
     if (outputs.size()==0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, amounts array is empty.");
 
-
+    printf("z_c 16 \n");
     if( inputs_t.size()>0 && inputs_z.size()>0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, only one input  is allowed");
 
