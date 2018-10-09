@@ -748,8 +748,9 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 #else
     LOCK(cs_main);
 #endif
+    printf("sing 1 \n");
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR)(UniValue::VARR)(UniValue::VARR)(UniValue::VSTR), true);
-
+    printf("sing 2 \n");
     vector<unsigned char> txData(ParseHexV(params[0], "argument 1"));
     CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
     vector<CMutableTransaction> txVariants;
@@ -763,10 +764,10 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
             throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
         }
     }
-
+    printf("sing 3 \n");
     if (txVariants.empty())
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Missing transaction");
-
+    printf("sing 4 \n");
     //txhash - CTXOut
     CTxOutMap cTxOutMap;
     // mergedTx will end up with all the signatures; it
@@ -808,7 +809,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     else if (pwalletMain)
         EnsureWalletIsUnlocked();
 #endif
-
+    printf("sing 5 \n");
     // Add previous txouts given in the RPC call:
     if (params.size() > 1 && !params[1].isNull()) {
         UniValue prevTxs = params[1].get_array();
@@ -864,7 +865,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 #else
     const CKeyStore& keystore = tempKeystore;
 #endif
-
+    printf("sing 6 \n");
     int nHashType = SIGHASH_ALL;
     if (params.size() > 3 && !params[3].isNull()) {
         static map<string, int> mapSigHashValues =
@@ -930,14 +931,14 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         }
     }
     bool fComplete = vErrors.empty();
-
+    printf("sing 7 \n");
     UniValue result(UniValue::VOBJ);
     result.push_back(Pair("hex", EncodeHexTx(mergedTx)));
     result.push_back(Pair("complete", fComplete));
     if (!vErrors.empty()) {
         result.push_back(Pair("errors", vErrors));
     }
-
+    printf("sing 8 \n");
     return result;
 }
 
@@ -1699,7 +1700,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
         printf("z_sign 8\n");
         UniValue paramTx(UniValue::VARR);
         paramTx.push_back(rawtxnValue.get_str());
-        if(params.size() == 3){
+        if(params.size() >= 3){
             paramTx.push_back(params[1].get_array());
             paramTx.push_back(params[2].get_array());
         }
