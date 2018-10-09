@@ -1423,32 +1423,19 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
                 "\nExamples\n"
         );
 
-    printf("z_c 1 \n");
-    //RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
-    printf("z_c 11 \n");
+    RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
     if (params[0].isNull() || params[1].isNull() || params[2].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 and  3 must be non-null");
-    printf("z_c 12 \n");
 
-    bool br = params[0].isArray();
-    printf("z_c12 %d \n", br);
     UniValue inputs_t = params[0].get_array();
-
-
-    printf("z_c 13 \n");
     UniValue inputs_z = params[1].get_array();
-    printf("z_c 14 \n");
     UniValue outputs = params[2].get_array();
-    printf("z_c 15 \n");
 
     if (outputs.size()==0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, amounts array is empty.");
-
-    printf("z_c 16 \n");
     if( inputs_t.size()>0 && inputs_z.size()>0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, only one input  is allowed");
 
-    printf("z_c 2 \n");
     int nextBlockHeight = chainActive.Height() + 1;
     CMutableTransaction rawTx = CreateNewContextualCMutableTransaction(
             Params().GetConsensus(), nextBlockHeight);
@@ -1460,20 +1447,20 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         LOCK(cs_main);
         rawTx_z.consensusBranchId_ = CurrentEpochBranchId(chainActive.Height() + 1, Params().GetConsensus());
     }
-    printf("z_c 3\n");
+
     if (NetworkUpgradeActive(nextBlockHeight, Params().GetConsensus(), Consensus::UPGRADE_OVERWINTER)) {
         if (rawTx.nExpiryHeight >= TX_EXPIRY_HEIGHT_THRESHOLD){
             throw JSONRPCError(RPC_INVALID_PARAMETER, "nExpiryHeight must be less than TX_EXPIRY_HEIGHT_THRESHOLD.");
         }
     }
-    printf("z_c 4 \n");
+
     if (params.size() > 3 && !params[3].isNull()) {
         int64_t nLockTime = params[2].get_int64();
         if (nLockTime < 0 || nLockTime > std::numeric_limits<uint32_t>::max())
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, locktime out of range");
         rawTx.nLockTime = nLockTime;
     }
-    printf("z_c 5 \n");
+
     for (size_t idx = 0; idx < inputs_t.size(); idx++) {
         const UniValue& input = inputs_t[idx];
         const UniValue& o = input.get_obj();
@@ -1498,7 +1485,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         rawTx.vin.push_back(in);
     }
 
-    printf("z_c 6 \n");
+
     for (size_t idx = 0; idx < inputs_z.size(); idx++) {
         const UniValue& input = inputs_z[idx];
         const UniValue& o = input.get_obj();
@@ -1544,33 +1531,41 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     for (const UniValue& o : outputs.getValues()) {
         if (!o.isObject())
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected object");
-
+        printf("z_c 71 \n");
         // sanity check, report error if unknown key-value pairs
         for (const string& name_ : o.getKeys()) {
             std::string s = name_;
             if (s != "address" && s != "amount" && s!="memo")
                 throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, unknown key: ")+s);
         }
-
+        printf("z_c 72 \n");
         string address = find_value(o, "address").get_str();
+        printf("z_c 73 \n");
         bool isZaddr = false;
         CTxDestination taddr = DecodeDestination(address);
+        printf("z_c 74 \n");
         if (!IsValidDestination(taddr)) {
+            printf("z_c 75 \n");
             if (IsValidPaymentAddressString(address)) {
+                printf("z_c 76 \n");
                 isZaddr = true;
             } else {
                 throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, unknown address format: ")+address );
             }
         }
-
+        printf("z_c 77 \n");
         if (setAddress.count(address))
             throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+address);
+        printf("z_c 7 8\n");
         setAddress.insert(address);
-
+        printf("z_c 7 9\n");
         UniValue memoValue = find_value(o, "memo");
+        printf("z_c 7 0\n");
         string memo;
         if (!memoValue.isNull()) {
+            printf("z_c 711\n");
             memo = memoValue.get_str();
+            printf("z_c 7 12\n");
             if (!isZaddr) {
                 throw JSONRPCError(RPC_INVALID_PARAMETER, "Memo cannot be used with a taddr.  It can only be used with a zaddr.");
             } else if (!IsHex(memo)) {
@@ -1580,15 +1575,19 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
                 throw JSONRPCError(RPC_INVALID_PARAMETER,  strprintf("Invalid parameter, size of memo is larger than maximum allowed %d", ZC_MEMO_SIZE ));
             }
         }
-
+        printf("z_c 713 \n");
         UniValue av = find_value(o, "amount");
+        printf("z_c 7 14\n");
         CAmount nAmount = AmountFromValue( av );
+        printf("z_c 7 15 \n");
         if (nAmount < 0)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, amount must be positive");
-
+        printf("z_c 7 16\n");
         if (isZaddr) {
+            printf("z_c 7 17\n");
             rawTx_z.voutz.push_back(CTxOut_z(JSOutput_wrapper(address, nAmount, memo)));
         } else {
+            printf("z_c 7 18\n");
             CScript scriptPubKey = GetScriptForDestination(taddr);
             CTxOut out(nAmount, scriptPubKey);
             rawTx.vout.push_back(out);
