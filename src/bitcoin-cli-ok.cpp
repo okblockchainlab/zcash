@@ -261,6 +261,14 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
         strPrint = std::string("error runtime: ") + e.what();
         nRet = EXIT_FAILURE;
     }
+    catch (const UniValue & e){
+
+        std::vector<UniValue>  vals = e.getValues();
+        for(int i=0; i<vals.size(); i++){
+            PrintExceptionContinue(NULL, vals[0].get_str().c_str());
+        }
+        throw;
+    }
     catch (...) {
         PrintExceptionContinue(NULL, "CommandLineRPC() in");
         throw;
@@ -306,7 +314,8 @@ UniValue EXEMethod(const std::string strMethod,  std::vector <std::string> &para
     catch (const std::exception& e) {
         PrintExceptionContinue(&e, "AppInitRPC()");
         return result;
-    } catch (...) {
+    }
+    catch (...) {
         PrintExceptionContinue(NULL, "AppInitRPC()");
         return result;
     }
