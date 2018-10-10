@@ -1391,6 +1391,7 @@ UniValue perform_joinsplit(AsyncJoinSplitInfo & info, std::vector<JSOutPoint> & 
                            CTransaction_z &tx_,
                            const unsigned char *pjoinSplitPrivKey_)
 {
+    printf("perform a4  \n");
     std::vector<boost::optional < ZCIncrementalWitness>> witnesses;
     uint256 anchor;
     {
@@ -1402,6 +1403,7 @@ UniValue perform_joinsplit(AsyncJoinSplitInfo & info, std::vector<JSOutPoint> & 
 UniValue perform_joinsplit(AsyncJoinSplitInfo & info,  const SpendingKey &spendingKey_,
                            CTransaction_z &tx_, const unsigned char *pjoinSplitPrivKey_)
 {
+    printf("perform a5  \n");
     std::vector<boost::optional < ZCIncrementalWitness>> witnesses;
     uint256 anchor;
     {
