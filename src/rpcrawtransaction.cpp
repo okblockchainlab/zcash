@@ -1730,7 +1730,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
      * SCENARIO #1 end
      */
 
-
+    printf("z_sign 10\n");
     uint256 joinSplitPubKey_;
     unsigned char joinSplitPrivKey_[crypto_sign_SECRETKEYBYTES];
 
@@ -1738,7 +1738,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
     crypto_sign_keypair(joinSplitPubKey_.begin(), joinSplitPrivKey_);
     mtx.joinSplitPubKey = joinSplitPubKey_;
     tx_z.tx = CTransaction(mtx);
-
+    printf("z_sign 10\n");
     // The key is the result string from calling JSOutPoint::ToString()
     std::unordered_map<std::string, WitnessAnchorData> jsopWitnessAnchorMap;
     std::deque<SendManyInputJSOP> zInputsDeque;
@@ -1759,7 +1759,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
     for (int i=0; i<tx_z.voutz.size(); i++) {
         zOutputsDeque.push_back(SendManyRecipient(tx_z.voutz[i].jso.address, tx_z.voutz[i].jso.value, tx_z.voutz[i].jso.memo));
     }
-
+    printf("z_sign 20\n");
 
     /**
     * SCENARIO #2
@@ -1770,7 +1770,7 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
     */
 
     if (tx_z.vinz.size() == 0 && tx_z.voutz.size() > 0){
-
+        printf("z_sign 21\n");
         // Create joinsplits, where each output represents a zaddr recipient.
         UniValue obj(UniValue::VOBJ);
         while (zOutputsDeque.size() > 0) {
@@ -1797,7 +1797,9 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
             }
 
             SpendingKey spendingk;
+            printf("z_sign 22\n");
             obj = perform_joinsplit(info, spendingk, tx_z, joinSplitPrivKey_);
+            printf("z_sign 23\n");
         }
 
         UniValue rawtxnValue = find_value(obj, "rawtxn");
@@ -1810,10 +1812,11 @@ UniValue z_signrawtransaction_ok(const UniValue& params, bool fHelp){
             paramTx.push_back(params[1].get_array());
             paramTx.push_back(params[2].get_array());
         }
-
+        printf("z_sign 24\n");
         if(params.size() == 4){
             paramTx.push_back(params[3].get_str());
         }
+        printf("z_sign 25\n");
         return signrawtransaction(paramTx, false);
     }
     /**
