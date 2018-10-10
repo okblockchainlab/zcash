@@ -916,10 +916,16 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
          */
         printf("sing 6 6\n");
         CTxOutMap::iterator ite = cTxOutMap.find(txin.prevout.hash);
+        printf("sing 6 61\n");
         if (ite == cTxOutMap.end())
+        {
+            printf("sing 6 62 \n");
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid txin.prevout.hash  key");
+        }
 
+        printf("sing 6 6 3\n");
         CScript prevPubKey = ite->second.scriptPubKey;
+        printf("sing 6 6 4\n");
         CAmount amount = ite->second.nValue;
         printf("sing 6 7\n");
         SignatureData sigdata;
