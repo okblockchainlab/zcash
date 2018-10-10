@@ -914,7 +914,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         const CScript& prevPubKey = coins->vout[txin.prevout.n].scriptPubKey;
         const CAmount& amount = coins->vout[txin.prevout.n].nValue;
          */
-        printf("sing 6 6\n");
+        printf("sing 6 6 %s\n", txin.prevout.hash.ToString().c_str());
         CTxOutMap::iterator ite = cTxOutMap.find(txin.prevout.hash);
         printf("sing 6 61\n");
         if (ite == cTxOutMap.end())
