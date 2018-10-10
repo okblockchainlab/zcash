@@ -1244,26 +1244,30 @@ UniValue perform_joinsplit(
         const unsigned char *pjoinSplitPrivKey_)
 {
 
+    printf("perform 1 \n");
     if (anchor.IsNull()) {
         throw std::runtime_error("anchor is null");
     }
-
+    printf("perform 2 \n");
     if (!(witnesses.size() == info.notes.size())) {
         throw runtime_error("number of notes and witnesses do not match");
     }
-
+    printf("perform 3 \n");
     for (size_t i = 0; i < witnesses.size(); i++) {
         if (!witnesses[i]) {
             throw runtime_error("joinsplit input could not be found in tree");
         }
+        printf("perform 4 \n");
         info.vjsin.push_back(JSInput(*witnesses[i], info.notes[i], boost::get<libzcash::SproutSpendingKey>(spendingkey_)));
     }
 
+    printf("perform 5 \n");
     // Make sure there are two inputs and two outputs
     while (info.vjsin.size() < ZC_NUM_JS_INPUTS) {
         info.vjsin.push_back(JSInput());
     }
 
+    printf("perform 6 \n");
     while (info.vjsout.size() < ZC_NUM_JS_OUTPUTS) {
         info.vjsout.push_back(JSOutput());
     }
@@ -1272,6 +1276,7 @@ UniValue perform_joinsplit(
         throw runtime_error("unsupported joinsplit input/output counts");
     }
 
+    printf("perform 7 \n");
     CMutableTransaction mtx(tx_z.tx);
 
     // Generate the proof, this can take over a minute.
@@ -1284,6 +1289,7 @@ UniValue perform_joinsplit(
 
     uint256 esk; // payment disclosure - secret
 
+    printf("perform 8 \n");
     JSDescription jsdesc = JSDescription::Randomized(
             mtx.fOverwintered && (mtx.nVersion >= SAPLING_TX_VERSION),
             *pzcashParams,
@@ -1298,19 +1304,23 @@ UniValue perform_joinsplit(
             true,
             &esk); // parameter expects pointer to esk, so pass in address
     {
+        printf("perform 9 \n");
         auto verifier = libzcash::ProofVerifier::Strict();
         if (!(jsdesc.Verify(*pzcashParams, verifier, tx_z.tx.joinSplitPubKey))) {
             throw std::runtime_error("error verifying joinsplit");
         }
     }
 
+    printf("perform 10 \n");
     mtx.vjoinsplit.push_back(jsdesc);
 
     // Empty output script.
     CScript scriptCode;
     CTransaction signTx(mtx);
+    printf("perform 11 \n");
     uint256 dataToBeSigned = SignatureHash(scriptCode, signTx, NOT_AN_INPUT, SIGHASH_ALL, 0, tx_z.consensusBranchId_);
 
+    printf("perform 12 \n");
     // Add the signature
     if (!(crypto_sign_detached(&mtx.joinSplitSig[0], NULL,
                                dataToBeSigned.begin(), 32,
@@ -1320,6 +1330,7 @@ UniValue perform_joinsplit(
         throw std::runtime_error("crypto_sign_detached failed");
     }
 
+    printf("perform 13 \n");
     // Sanity check
     if (!(crypto_sign_verify_detached(&mtx.joinSplitSig[0],
                                       dataToBeSigned.begin(), 32,
@@ -1329,6 +1340,7 @@ UniValue perform_joinsplit(
         throw std::runtime_error("crypto_sign_verify_detached failed");
     }
 
+    printf("perform 14 \n");
     CTransaction rawTx(mtx);
     tx_z.tx = rawTx;
 
