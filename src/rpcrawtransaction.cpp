@@ -1245,9 +1245,9 @@ UniValue perform_joinsplit(
 {
 
     printf("perform 1 \n");
-    if (anchor.IsNull()) {
-        throw std::runtime_error("anchor is null");
-    }
+    //if (anchor.IsNull()) {
+    //    throw std::runtime_error("anchor is null");
+    //}
     printf("perform 2 \n");
     if (!(witnesses.size() == info.notes.size())) {
         throw runtime_error("number of notes and witnesses do not match");
