@@ -1173,6 +1173,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         return InitError(strprintf(_("Cannot obtain a lock on data directory %s. Zcash is probably already running.") + " %s.", strDataDir, e.what()));
     }
 
+    ZC_LoadParams(chainparams);
     return true;
 
 #ifndef WIN32
