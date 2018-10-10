@@ -720,6 +720,7 @@ static void ZC_LoadParams(
     LogPrintf("Loading verifying key from %s\n", vk_path.string().c_str());
     gettimeofday(&tv_start, 0);
 
+    printf("pzcashParams init path:%s \n", vk_path.string().c_str());
     pzcashParams = ZCJoinSplit::Prepared(vk_path.string(), pk_path.string());
 
     gettimeofday(&tv_end, 0);

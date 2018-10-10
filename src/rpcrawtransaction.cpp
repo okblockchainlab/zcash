@@ -1289,7 +1289,7 @@ UniValue perform_joinsplit(
 
     uint256 esk; // payment disclosure - secret
 
-    printf("perform 8 \n");
+    printf("perform 8 %\n");
     JSDescription jsdesc = JSDescription::Randomized(
             mtx.fOverwintered && (mtx.nVersion >= SAPLING_TX_VERSION),
             *pzcashParams,
