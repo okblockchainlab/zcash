@@ -264,9 +264,10 @@ UniValue CommandLineRPC(std::string strMethod, std::vector<std::string> &args)
     catch (const UniValue & e){
 
         std::vector<UniValue>  vals = e.getValues();
-        for(int i=0; i<vals.size(); i++){
-            PrintExceptionContinue(NULL, vals[0].get_str().c_str());
-        }
+        //for(int i=0; i<vals.size(); i++){
+        if (vals.size()>1)
+            PrintExceptionContinue(NULL, vals[1].get_str().c_str());
+        //}
         throw;
     }
     catch (...) {
