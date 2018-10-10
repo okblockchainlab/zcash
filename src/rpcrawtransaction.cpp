@@ -1405,9 +1405,12 @@ UniValue perform_joinsplit(AsyncJoinSplitInfo & info,  const SpendingKey &spendi
 {
     printf("perform a5  \n");
     std::vector<boost::optional < ZCIncrementalWitness>> witnesses;
+    printf("perform a5 1  \n");
     uint256 anchor;
     {
+        printf("perform a5 2  \n");
         anchor = pcoinsTip->GetBestAnchor(SPROUT);    // As there are no inputs, ask the wallet for the best anchor
+        printf("perform a5 3 \n");
     }
     return perform_joinsplit(info, witnesses, anchor, spendingKey_, tx_, pjoinSplitPrivKey_);
 }
