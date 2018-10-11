@@ -685,14 +685,14 @@ static void ZC_LoadParams(
 {
     struct timeval tv_start, tv_end;
     float elapsed;
-    LogPrintf("ZC_LoadParams 1");
+    LogPrintf("ZC_LoadParams 1\n");
     boost::filesystem::path pk_path = ZC_GetParamsDir() / "sprout-proving.key";
     boost::filesystem::path vk_path = ZC_GetParamsDir() / "sprout-verifying.key";
     boost::filesystem::path sapling_spend = ZC_GetParamsDir() / "sapling-spend-testnet.params";
     boost::filesystem::path sapling_output = ZC_GetParamsDir() / "sapling-output-testnet.params";
     boost::filesystem::path sprout_groth16 = ZC_GetParamsDir() / "sprout-groth16-testnet.params";
 
-    LogPrintf("ZC_LoadParams 1");
+    LogPrintf("ZC_LoadParams 2\n");
     bool sapling_paths_valid = true;
 
     // We don't load Sapling zk-SNARK params if mainnet is configured
@@ -702,19 +702,22 @@ static void ZC_LoadParams(
             boost::filesystem::exists(sapling_output) &&
             boost::filesystem::exists(sprout_groth16);
     }
-    LogPrintf("ZC_LoadParams 3");
+    LogPrintf("ZC_LoadParams 3\n");
     if (!(
         boost::filesystem::exists(pk_path) &&
         boost::filesystem::exists(vk_path) &&
         sapling_paths_valid
     )) {
+        LogPrintf("ZC_LoadParams 4\n");
         uiInterface.ThreadSafeMessageBox(strprintf(
             _("Cannot find the Zcash network parameters in the following directory:\n"
               "%s\n"
               "Please run 'zcash-fetch-params' or './zcutil/fetch-params.sh' and then restart."),
                 ZC_GetParamsDir()),
             "", CClientUIInterface::MSG_ERROR);
+        LogPrintf("ZC_LoadParams 5\n");
         StartShutdown();
+        LogPrintf("ZC_LoadParams 6\n");
         return;
     }
 
