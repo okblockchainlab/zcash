@@ -1457,10 +1457,11 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
                 "\nExamples\n"
         );
 
+    printf("z_c 1 \n");
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR)(UniValue::VARR), true);
     if (params[0].isNull() || params[1].isNull() || params[2].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 and  3 must be non-null");
-
+    printf("z_c 2 \n");
     UniValue inputs_t = params[0].get_array();
     UniValue inputs_z = params[1].get_array();
     UniValue outputs = params[2].get_array();
@@ -1473,7 +1474,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     int nextBlockHeight = chainActive.Height() + 1;
     CMutableTransaction rawTx = CreateNewContextualCMutableTransaction(
             Params().GetConsensus(), nextBlockHeight);
-
+    printf("z_c 3 \n");
     CTransaction_z  rawTx_z;
 
     // Grab the current consensus branch ID
@@ -1488,6 +1489,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         }
     }
 
+    printf("z_c 4 \n");
     if (params.size() > 3 && !params[3].isNull()) {
         int64_t nLockTime = params[2].get_int64();
         if (nLockTime < 0 || nLockTime > std::numeric_limits<uint32_t>::max())
