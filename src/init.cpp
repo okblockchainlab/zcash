@@ -685,13 +685,14 @@ static void ZC_LoadParams(
 {
     struct timeval tv_start, tv_end;
     float elapsed;
-
+    LogPrintf("ZC_LoadParams 1");
     boost::filesystem::path pk_path = ZC_GetParamsDir() / "sprout-proving.key";
     boost::filesystem::path vk_path = ZC_GetParamsDir() / "sprout-verifying.key";
     boost::filesystem::path sapling_spend = ZC_GetParamsDir() / "sapling-spend-testnet.params";
     boost::filesystem::path sapling_output = ZC_GetParamsDir() / "sapling-output-testnet.params";
     boost::filesystem::path sprout_groth16 = ZC_GetParamsDir() / "sprout-groth16-testnet.params";
 
+    LogPrintf("ZC_LoadParams 1");
     bool sapling_paths_valid = true;
 
     // We don't load Sapling zk-SNARK params if mainnet is configured
@@ -701,7 +702,7 @@ static void ZC_LoadParams(
             boost::filesystem::exists(sapling_output) &&
             boost::filesystem::exists(sprout_groth16);
     }
-
+    LogPrintf("ZC_LoadParams 3");
     if (!(
         boost::filesystem::exists(pk_path) &&
         boost::filesystem::exists(vk_path) &&
