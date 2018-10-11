@@ -702,19 +702,24 @@ static void ZC_LoadParams(
             boost::filesystem::exists(sapling_output) &&
             boost::filesystem::exists(sprout_groth16);
     }
-    LogPrintf("ZC_LoadParams 3\n");
+    LogPrintf("ZC_LoadParams 3 %s\n", vk_path.string().c_str());
     if (!(
         boost::filesystem::exists(pk_path) &&
         boost::filesystem::exists(vk_path) &&
         sapling_paths_valid
     )) {
         LogPrintf("ZC_LoadParams 4\n");
-        uiInterface.ThreadSafeMessageBox(strprintf(
+        /*uiInterface.ThreadSafeMessageBox(strprintf(
             _("Cannot find the Zcash network parameters in the following directory:\n"
               "%s\n"
               "Please run 'zcash-fetch-params' or './zcutil/fetch-params.sh' and then restart."),
                 ZC_GetParamsDir()),
-            "", CClientUIInterface::MSG_ERROR);
+            "", CClientUIInterface::MSG_ERROR);*/
+        throw  JSONRPCError(NULL, strprintf(
+                _("Cannot find the Zcash network parameters in the following directory:\n"
+                  "%s\n"
+                  "Please run 'zcash-fetch-params' or './zcutil/fetch-params.sh' and then restart."),
+                ZC_GetParamsDir()));
         LogPrintf("ZC_LoadParams 5\n");
         StartShutdown();
         LogPrintf("ZC_LoadParams 6\n");
