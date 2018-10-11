@@ -1521,7 +1521,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
         rawTx.vin.push_back(in);
     }
 
-
+    printf("z_c 6 \n");
     for (size_t idx = 0; idx < inputs_z.size(); idx++) {
         const UniValue& input = inputs_z[idx];
         const UniValue& o = input.get_obj();
@@ -1532,6 +1532,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
 
         std::vector<SendManyInputJSOP> z_inputs;
         std::deque<SendManyInputJSOP> zInputsDeque;
+        printf("z_c 51 \n");
         if( find_unspent_notes(z_inputs, txid, jsindex))
         {
             // Copy zinputs and zoutputs to more flexible containers
@@ -1539,6 +1540,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
                 zInputsDeque.push_back(o);
             }
         }
+        printf("z_c 51 \n");
         //
         // consume input source
         //
