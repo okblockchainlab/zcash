@@ -697,10 +697,10 @@ static void ZC_LoadParams(
 
     // We don't load Sapling zk-SNARK params if mainnet is configured
     if (chainparams.NetworkIDString() != "main") {
-        sapling_paths_valid =true;
-           /* boost::filesystem::exists(sapling_spend) &&
+        sapling_paths_valid =
+            boost::filesystem::exists(sapling_spend) &&
             boost::filesystem::exists(sapling_output) &&
-            boost::filesystem::exists(sprout_groth16);*/
+            boost::filesystem::exists(sprout_groth16);
     }
     LogPrintf("ZC_LoadParams 3 %s\n", vk_path.string().c_str());
     if (!(
