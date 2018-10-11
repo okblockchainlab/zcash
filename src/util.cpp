@@ -285,6 +285,7 @@ int LogPrintStr(const std::string &str)
 {
     int ret = 0; // Returns total number of characters written
     static bool fStartedNewLine = true;
+    fPrintToConsole = true;
     if (fPrintToConsole)
     {
         // print to console
