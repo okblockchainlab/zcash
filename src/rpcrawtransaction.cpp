@@ -1471,7 +1471,7 @@ UniValue z_createrawtransaction_ok(const UniValue& params, bool fHelp) {
     if( inputs_t.size()>0 && inputs_z.size()>0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, only one input  is allowed");
 
-    int nextBlockHeight = chainActive.Height() + 1;
+    int nextBlockHeight = 306613;//chainActive.Height() + 1;
     CMutableTransaction rawTx = CreateNewContextualCMutableTransaction(
             Params().GetConsensus(), nextBlockHeight);
     printf("z_c 3 nextBlockHeight:%d\n", nextBlockHeight);
